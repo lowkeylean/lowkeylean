@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="back" href="/">←</a>
+    <h1>Dashboard</h1>
+  </header>
+  <main>
+    <div class="metrics">
+      <div class="metric">
+        <div class="value" id="total">–</div>
+        <div class="label">Total Defects Reported</div>
+      </div>
+      <div class="metric">
+        <div class="value" id="completed">–</div>
+        <div class="label">Total Defects Completed</div>
+      </div>
+      <div class="metric wide">
+        <div class="value" id="pct">–</div>
+        <div class="label">Completion %</div>
+        <div class="progress-track">
+          <div class="progress-fill" id="bar"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+node_modules/
+defects.db
+uploads/*
+!uploads/.gitkeep
