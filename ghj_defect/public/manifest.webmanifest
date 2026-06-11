@@ -4,8 +4,8 @@
   "description": "Report, track, and complete facility defects",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f4f5f7",
-  "theme_color": "#2563eb",
+  "background_color": "#0a0b10",
+  "theme_color": "#0a0b10",
   "icons": [
     {
       "src": "/icons/icon.svg",

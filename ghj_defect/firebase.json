@@ -4,7 +4,7 @@
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "headers": [
       {
-        "source": "/sw.js",
+        "source": "**/*.@(html|css|js|webmanifest)",
         "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
       }
     ]

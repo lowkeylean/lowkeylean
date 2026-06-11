@@ -11,8 +11,10 @@ const authCard = document.getElementById('auth-card');
 const formCard = document.getElementById('form-card');
 const codeInput = document.getElementById('access-code');
 const segmentSelect = document.getElementById('segment');
+const zone = document.getElementById('before-zone');
 const fileInput = document.getElementById('before');
 const preview = document.getElementById('before-preview');
+const authBtn = document.getElementById('auth-btn');
 const submitBtn = document.getElementById('submit-btn');
 
 for (const s of SEGMENTS) {
@@ -22,27 +24,40 @@ for (const s of SEGMENTS) {
   segmentSelect.appendChild(opt);
 }
 
+function setLoading(btn, loading, label) {
+  btn.disabled = loading;
+  btn.classList.toggle('loading', loading);
+  // Last text node carries the label
+  btn.childNodes[btn.childNodes.length - 1].textContent = label;
+}
+
 function unlock() {
-  sessionStorage.setItem('accessCode', codeInput.value.trim() || sessionStorage.getItem('accessCode'));
   authCard.hidden = true;
   formCard.hidden = false;
   clearMsg(msg);
 }
 
-document.getElementById('auth-btn').addEventListener('click', () => {
+authBtn.addEventListener('click', () => {
   const code = codeInput.value.trim();
   if (!code) return showMsg(msg, 'error', 'Please enter the access code.');
   if (code !== ACCESS_CODE) return showMsg(msg, 'error', 'Invalid access code.');
+  sessionStorage.setItem('accessCode', code);
   unlock();
+});
+
+codeInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') authBtn.click();
 });
 
 fileInput.addEventListener('change', () => {
   const file = fileInput.files[0];
   if (file) {
     preview.src = URL.createObjectURL(file);
-    preview.style.display = 'block';
+    zone.classList.add('has-photo');
+    zone.querySelector('.dz-title').textContent = 'Photo attached — tap to retake';
   } else {
-    preview.style.display = 'none';
+    zone.classList.remove('has-photo');
+    zone.querySelector('.dz-title').textContent = 'Tap to capture photo';
   }
 });
 
@@ -51,18 +66,17 @@ document.getElementById('report-form').addEventListener('submit', async (e) => {
   clearMsg(msg);
 
   if (fileInput.files.length !== 1) {
-    return showMsg(msg, 'error', 'Exactly 1 before photo is required.');
+    return showMsg(msg, 'error', 'A before photo is required.');
   }
   if (!SEGMENTS.includes(segmentSelect.value)) {
     return showMsg(msg, 'error', 'Please select a segment.');
   }
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Submitting…';
+  setLoading(submitBtn, true, 'Submitting…');
   try {
     await authReady();
     const beforePicture = await compressImage(fileInput.files[0]);
-    const ref = await addDoc(collection(db, 'defects'), {
+    await addDoc(collection(db, 'defects'), {
       segment: segmentSelect.value,
       status: 'Reported',
       before_picture_url: beforePicture,
@@ -70,20 +84,20 @@ document.getElementById('report-form').addEventListener('submit', async (e) => {
       remarks: null,
       created_at: serverTimestamp(),
     });
-    showMsg(msg, 'ok', `Defect reported successfully in ${segmentSelect.value}`);
+    showMsg(msg, 'ok', `Defect reported in ${segmentSelect.value}.`);
     e.target.reset();
-    preview.style.display = 'none';
+    zone.classList.remove('has-photo');
+    zone.querySelector('.dz-title').textContent = 'Tap to capture photo';
   } catch (err) {
     showMsg(msg, 'error', err.message);
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit Defect';
+    setLoading(submitBtn, false, 'Submit defect');
   }
 });
 
 (function init() {
   if (configLooksUnset()) {
-    showMsg(msg, 'error', 'Firebase is not configured yet — edit public/js/firebase-config.js.');
+    showMsg(msg, 'error', 'Firebase is not configured yet.');
     return;
   }
   if (sessionStorage.getItem('accessCode') === ACCESS_CODE) unlock();

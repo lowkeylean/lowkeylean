@@ -1,6 +1,6 @@
-// Minimal service worker: pre-cache the app shell, serve same-origin static
-// files cache-first with background refresh. Firestore traffic is untouched.
-const CACHE = 'ghj-defect-v1';
+// Network-first service worker: always serve the latest deploy when online,
+// fall back to cache when offline. Bumping CACHE invalidates old shells.
+const CACHE = 'ghj-defect-v2';
 const SHELL = [
   '/',
   '/report.html',
@@ -30,17 +30,14 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const fresh = fetch(event.request)
-        .then((res) => {
-          if (res.ok) {
-            const copy = res.clone();
-            caches.open(CACHE).then((c) => c.put(event.request, copy));
-          }
-          return res;
-        })
-        .catch(() => cached);
-      return cached || fresh;
-    })
+    fetch(event.request)
+      .then((res) => {
+        if (res.ok) {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(event.request, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(event.request))
   );
 });

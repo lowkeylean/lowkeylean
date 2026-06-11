@@ -2,34 +2,79 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Defect Manager</title>
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GHJ Defects</title>
+  <meta name="theme-color" content="#0a0b10" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <header class="app-header">
-    <h1>Defect Manager</h1>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </span>
+      GHJ <em>Defects</em>
+    </a>
+    <nav class="tabs">
+      <a href="/report.html">Report</a>
+      <a href="/worker.html">Queue</a>
+      <a href="/dashboard.html">Analytics</a>
+    </nav>
   </header>
+
   <main>
+    <section class="hero">
+      <span class="kicker"><span class="dot"></span>Live system</span>
+      <h1>Facility defects,<br /><span>tracked to done.</span></h1>
+      <p>Report issues with photo evidence, dispatch them to the team, and watch completion climb in real time.</p>
+    </section>
+
     <nav class="nav-grid">
-      <a href="/report.html">
-        <strong>Report a Defect</strong>
-        <span>Log a new defect with a before photo. Authorized access only.</span>
+      <a class="nav-card" href="/report.html">
+        <span class="icon indigo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </span>
+        <span class="body">
+          <strong>Report a defect</strong>
+          <span>Capture a before photo and log the issue. Authorized access.</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
-      <a href="/worker.html">
-        <strong>Worker Dashboard</strong>
-        <span>Pick up active defects, complete work with after photos and remarks</span>
+
+      <a class="nav-card" href="/worker.html">
+        <span class="icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </span>
+        <span class="body">
+          <strong>Work queue</strong>
+          <span>Pick up active defects, attach after photos, close them out.</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
-      <a href="/dashboard.html">
-        <strong>Analytics</strong>
-        <span>Real-time metrics and completion tracking</span>
+
+      <a class="nav-card" href="/dashboard.html">
+        <span class="icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 13l3-3 4 4 5-5"/></svg>
+        </span>
+        <span class="body">
+          <strong>Analytics</strong>
+          <span>Totals, completion rate, and per-segment breakdown.</span>
+        </span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </a>
     </nav>
+
+    <p class="foot-note">Installable — open in Chrome and choose “Add to Home screen”.</p>
   </main>
+
   <script src="/js/sw-register.js"></script>
 </body>
 </html>

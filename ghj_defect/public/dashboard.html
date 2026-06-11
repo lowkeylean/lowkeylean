@@ -2,38 +2,76 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard</title>
-  <meta name="theme-color" content="#2563eb" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Analytics — GHJ Defects</title>
+  <meta name="theme-color" content="#0a0b10" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
-  <header class="app-header">
-    <a class="back" href="/">←</a>
-    <h1>Analytics</h1>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </span>
+      GHJ <em>Defects</em>
+    </a>
+    <nav class="tabs">
+      <a href="/report.html">Report</a>
+      <a href="/worker.html">Queue</a>
+      <a href="/dashboard.html" class="active">Analytics</a>
+    </nav>
   </header>
+
   <main>
-    <div class="metrics">
-      <div class="metric">
-        <div class="value" id="total">–</div>
-        <div class="label">Reported</div>
-      </div>
-      <div class="metric">
-        <div class="value" id="completed">–</div>
-        <div class="label">Completed</div>
-      </div>
-      <div class="metric wide">
-        <div class="value" id="pct">–</div>
-        <div class="label">Completion Rate</div>
-        <div class="progress-track">
-          <div class="progress-fill" id="bar"></div>
-        </div>
-      </div>
+    <div class="page-head">
+      <h1>Analytics</h1>
+      <p>Live overview of reported and completed defects.</p>
     </div>
+
+    <div id="msg" class="msg" role="status"></div>
+
+    <section class="stats">
+      <div class="stat">
+        <div class="label">Reported</div>
+        <div class="value" id="total">–</div>
+      </div>
+      <div class="stat">
+        <div class="label">Completed</div>
+        <div class="value green" id="completed">–</div>
+      </div>
+      <div class="stat">
+        <div class="label">Active</div>
+        <div class="value blue" id="active">–</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Completion rate</h2>
+      <div class="completion-row">
+        <span class="big" id="pct">–</span>
+        <span class="sub" id="ratio"></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="bar"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Defects by segment</h2>
+      <div id="segments">
+        <div class="skeleton block"></div>
+      </div>
+    </section>
   </main>
+
   <script src="/js/sw-register.js"></script>
   <script type="module" src="/js/dashboard.js"></script>
 </body>
