@@ -100,7 +100,7 @@ function renderDefect(d) {
         after_picture_url: afterPicture,
         remarks,
       });
-      showMsg(msg, 'ok', `Defect in ${d.segment} marked as completed. 🎉`);
+      showMsg(msg, 'ok', `Defect completed successfully. Task closed.`);
       el.remove();
       if (!list.querySelector('.defect')) renderEmpty();
     } catch (err) {
@@ -114,7 +114,7 @@ function renderDefect(d) {
 }
 
 function renderEmpty() {
-  list.innerHTML = '<p class="empty">No active defects. All clear! ✨</p>';
+  list.innerHTML = '<p class="empty">All defects completed. No active work items.</p>';
 }
 
 async function load() {

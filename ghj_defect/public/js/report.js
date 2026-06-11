@@ -70,7 +70,7 @@ document.getElementById('report-form').addEventListener('submit', async (e) => {
       remarks: null,
       created_at: serverTimestamp(),
     });
-    showMsg(msg, 'ok', `Defect reported in ${segmentSelect.value} (ref ${ref.id.slice(0, 6)}…).`);
+    showMsg(msg, 'ok', `Defect reported successfully in ${segmentSelect.value}`);
     e.target.reset();
     preview.style.display = 'none';
   } catch (err) {

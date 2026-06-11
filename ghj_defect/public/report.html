@@ -13,33 +13,31 @@
 <body>
   <header class="app-header">
     <a class="back" href="/">←</a>
-    <h1>Report a Defect</h1>
+    <h1>Report Defect</h1>
   </header>
   <main>
     <div id="msg" class="msg"></div>
 
-    <!-- Access gate for authorized users -->
     <section id="auth-card" class="card">
-      <label for="access-code">Access code</label>
-      <input type="password" id="access-code" placeholder="Enter access code" autocomplete="off" />
-      <button id="auth-btn">Unlock</button>
+      <label for="access-code">Authorization Code</label>
+      <input type="password" id="access-code" placeholder="Enter your code" autocomplete="off" />
+      <button id="auth-btn">Verify Access</button>
     </section>
 
-    <!-- Report form (hidden until authorized) -->
     <section id="form-card" class="card" hidden>
       <form id="report-form">
-        <label for="segment">Segment</label>
+        <label for="segment">Location Segment</label>
         <select id="segment" required>
-          <option value="" disabled selected>Select a segment…</option>
+          <option value="" disabled selected>Select affected area</option>
         </select>
 
         <div class="file-input">
-          <label for="before">Before photo (exactly 1)</label>
+          <label for="before">Before Photo</label>
           <input type="file" id="before" accept="image/*" capture="environment" required />
           <img id="before-preview" class="preview" alt="Before photo preview" />
         </div>
 
-        <button type="submit" id="submit-btn">Submit Defect</button>
+        <button type="submit" id="submit-btn">Report Defect</button>
       </form>
     </section>
   </main>
