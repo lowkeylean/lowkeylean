@@ -1,12 +1,11 @@
-// Paste your Firebase web app config here (Firebase Console -> Project
-// settings -> Your apps -> Web app -> SDK setup and configuration).
+// Your Firebase web app config.
 export const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_PROJECT_ID.firebaseapp.com',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_PROJECT_ID.appspot.com',
-  messagingSenderId: 'YOUR_SENDER_ID',
-  appId: 'YOUR_APP_ID',
+  apiKey: 'AIzaSyBDegSU5Q8yfN64Ql5DdOoAeLCeWC-HxLo',
+  authDomain: 'ghjdefectapp.firebaseapp.com',
+  projectId: 'ghjdefectapp',
+  storageBucket: 'ghjdefectapp.firebasestorage.app',
+  messagingSenderId: '1029272488695',
+  appId: '1:1029272488695:web:ab593923f91b008a2ce1f2',
 };
 
 // Shared access code required to report a defect.
