@@ -1,4 +1,4 @@
+.firebase/
+firebase-debug.log
+*.log
 node_modules/
-defects.db
-uploads/*
-!uploads/.gitkeep

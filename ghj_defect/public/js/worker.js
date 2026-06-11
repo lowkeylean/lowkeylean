@@ -1,18 +1,23 @@
+import {
+  collection,
+  query,
+  orderBy,
+  getDocs,
+  doc,
+  updateDoc,
+} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+import { db, authReady, compressImage, configLooksUnset, showMsg } from './app.js';
+
 const msg = document.getElementById('msg');
 const list = document.getElementById('list');
-
-function show(type, text) {
-  msg.className = `msg ${type}`;
-  msg.textContent = text;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
 
 function badgeClass(status) {
   return status.toLowerCase().replace(' ', '-');
 }
 
-function formatDate(iso) {
-  return new Date(iso).toLocaleString();
+function formatDate(ts) {
+  if (!ts) return 'just now';
+  return ts.toDate().toLocaleString();
 }
 
 function renderDefect(d) {
@@ -21,13 +26,13 @@ function renderDefect(d) {
   el.innerHTML = `
     <button type="button" class="defect-head">
       <span>
-        #${d.id} · ${d.segment}
+        ${d.segment}
         <span class="meta">Reported ${formatDate(d.created_at)}</span>
       </span>
       <span class="badge ${badgeClass(d.status)}">${d.status}</span>
     </button>
     <div class="defect-body">
-      <img class="before" src="${d.before_picture_url}" alt="Before photo for defect ${d.id}" loading="lazy" />
+      <img class="before" alt="Before photo" loading="lazy" />
       <form>
         <div class="file-input">
           <label>After photo</label>
@@ -40,6 +45,7 @@ function renderDefect(d) {
       </form>
     </div>
   `;
+  el.querySelector('img.before').src = d.before_picture_url;
 
   const head = el.querySelector('.defect-head');
   head.addEventListener('click', async () => {
@@ -50,12 +56,14 @@ function renderDefect(d) {
 
     // Selecting a task moves it to In Progress
     if (d.status === 'Reported') {
-      const res = await fetch(`/api/defects/${d.id}/start`, { method: 'POST' });
-      if (res.ok) {
+      try {
+        await updateDoc(doc(db, 'defects', d.id), { status: 'In Progress' });
         d.status = 'In Progress';
         const badge = el.querySelector('.badge');
         badge.textContent = 'In Progress';
         badge.className = 'badge in-progress';
+      } catch (err) {
+        showMsg(msg, 'error', err.message);
       }
     }
   });
@@ -75,24 +83,28 @@ function renderDefect(d) {
   el.querySelector('form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = e.target.querySelector('button');
-    const formData = new FormData();
-    formData.append('after', fileInput.files[0]);
-    formData.append('remarks', e.target.remarks.value);
+    const remarks = e.target.remarks.value.trim();
+    if (fileInput.files.length !== 1) {
+      return showMsg(msg, 'error', 'An after photo is required.');
+    }
+    if (!remarks) {
+      return showMsg(msg, 'error', 'Remarks are required.');
+    }
 
     btn.disabled = true;
     btn.textContent = 'Completing…';
     try {
-      const res = await fetch(`/api/defects/${d.id}/complete`, {
-        method: 'POST',
-        body: formData,
+      const afterPicture = await compressImage(fileInput.files[0]);
+      await updateDoc(doc(db, 'defects', d.id), {
+        status: 'Completed',
+        after_picture_url: afterPicture,
+        remarks,
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to complete defect');
-      show('ok', `Defect #${d.id} marked as completed. 🎉`);
+      showMsg(msg, 'ok', `Defect in ${d.segment} marked as completed. 🎉`);
       el.remove();
       if (!list.querySelector('.defect')) renderEmpty();
     } catch (err) {
-      show('error', err.message);
+      showMsg(msg, 'error', err.message);
       btn.disabled = false;
       btn.textContent = 'Mark as Completed';
     }
@@ -106,11 +118,22 @@ function renderEmpty() {
 }
 
 async function load() {
-  const res = await fetch('/api/defects?status=active');
-  const defects = await res.json();
-  list.innerHTML = '';
-  if (defects.length === 0) return renderEmpty();
-  defects.forEach((d) => list.appendChild(renderDefect(d)));
+  if (configLooksUnset()) {
+    showMsg(msg, 'error', 'Firebase is not configured yet — edit public/js/firebase-config.js.');
+    return;
+  }
+  try {
+    await authReady();
+    const snap = await getDocs(query(collection(db, 'defects'), orderBy('created_at', 'desc')));
+    const active = snap.docs
+      .map((s) => ({ id: s.id, ...s.data() }))
+      .filter((d) => d.status !== 'Completed');
+    list.innerHTML = '';
+    if (active.length === 0) return renderEmpty();
+    active.forEach((d) => list.appendChild(renderDefect(d)));
+  } catch (err) {
+    showMsg(msg, 'error', err.message);
+  }
 }
 
 load();

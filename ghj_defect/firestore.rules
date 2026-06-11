@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /defects/{defectId} {
+      allow read: if request.auth != null;
+
+      // New defects must arrive in 'Reported' state with a before photo.
+      allow create: if request.auth != null
+        && request.resource.data.segment in ['Public Area', 'Rooms', 'Lobby', 'Kitchen']
+        && request.resource.data.status == 'Reported'
+        && request.resource.data.before_picture_url is string
+        && request.resource.data.before_picture_url.size() > 0;
+
+      // Workers may only move status forward and may not touch the
+      // original report fields.
+      allow update: if request.auth != null
+        && resource.data.status != 'Completed'
+        && request.resource.data.status in ['In Progress', 'Completed']
+        && request.resource.data.segment == resource.data.segment
+        && request.resource.data.before_picture_url == resource.data.before_picture_url;
+
+      allow delete: if false;
+    }
+  }
+}

@@ -1,10 +1,32 @@
+import {
+  collection,
+  query,
+  where,
+  getCountFromServer,
+} from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+import { db, authReady, configLooksUnset } from './app.js';
+
 async function load() {
-  const res = await fetch('/api/metrics');
-  const m = await res.json();
-  document.getElementById('total').textContent = m.totalReported;
-  document.getElementById('completed').textContent = m.totalCompleted;
-  document.getElementById('pct').textContent = `${m.completionPct}%`;
-  document.getElementById('bar').style.width = `${Math.min(m.completionPct, 100)}%`;
+  if (configLooksUnset()) {
+    document.getElementById('total').textContent = '⚙️';
+    document.getElementById('completed').textContent = '⚙️';
+    document.getElementById('pct').textContent = 'Set up Firebase config';
+    return;
+  }
+  await authReady();
+  const defects = collection(db, 'defects');
+  const [totalSnap, completedSnap] = await Promise.all([
+    getCountFromServer(defects),
+    getCountFromServer(query(defects, where('status', '==', 'Completed'))),
+  ]);
+  const total = totalSnap.data().count;
+  const completed = completedSnap.data().count;
+  const pct = total === 0 ? 0 : Math.round((completed / total) * 1000) / 10;
+
+  document.getElementById('total').textContent = total;
+  document.getElementById('completed').textContent = completed;
+  document.getElementById('pct').textContent = `${pct}%`;
+  document.getElementById('bar').style.width = `${Math.min(pct, 100)}%`;
 }
 
 load();
