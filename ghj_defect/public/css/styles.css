@@ -787,6 +787,13 @@ textarea {
   font-variant-numeric: tabular-nums;
 }
 
+.today-count {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
 .stat .value.green { color: var(--green); }
 .stat .value.blue  { color: var(--blue); }
 
@@ -1172,59 +1179,86 @@ textarea {
   filter: none;
 }
 
-/* ---------- Completed Defects (dashboard) ---------- */
-.completed-defect {
-  background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  margin-bottom: 10px;
-}
-
-.completed-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-
-.completed-header strong {
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
-.completed-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.75rem;
-  color: var(--text-2);
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+/* ---------- Area Section (Dashboard) ---------- */
+.area-section-dashboard {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--border);
 }
 
-.completed-meta span {
-  word-break: break-word;
+.area-section-dashboard:last-child {
+  border-bottom: none;
 }
 
-.completed-dates {
+.area-summary {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 0.72rem;
-  color: var(--text-3);
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
-.date-item {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+.area-info {
+  flex: 1;
+  min-width: 0;
 }
 
-.date-item strong {
+.area-name {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.area-counts {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.75rem;
   color: var(--text-2);
+}
+
+.btn-toggle-completed {
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--accent-bright);
+  background: rgba(94, 106, 210, 0.12);
+  border: 1px solid rgba(94, 106, 210, 0.3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.btn-toggle-completed:hover {
+  background: rgba(94, 106, 210, 0.2);
+  border-color: var(--accent);
+}
+
+.completed-defects-list {
+  display: grid;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.completed-defect-mini {
+  background: rgba(46, 204, 142, 0.08);
+  border: 1px solid rgba(46, 204, 142, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+}
+
+.completed-defect-mini strong {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.completed-defect-mini .tag {
+  display: inline-block;
 }
 
 /* ---------- Responsive ---------- */

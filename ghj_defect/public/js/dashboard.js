@@ -31,6 +31,15 @@ function formatDate(ts) {
   });
 }
 
+function isToday(date) {
+  if (!date) return false;
+  const d = date.toDate ? date.toDate() : new Date(date);
+  const today = new Date();
+  return d.getFullYear() === today.getFullYear() &&
+         d.getMonth() === today.getMonth() &&
+         d.getDate() === today.getDate();
+}
+
 async function load() {
   if (configLooksUnset()) {
     showMsg(msg, 'error', 'Firebase is not configured yet.');
@@ -46,9 +55,17 @@ async function load() {
     const active = total - completed;
     const pct = total === 0 ? 0 : Math.round((completed / total) * 1000) / 10;
 
+    // Count today's reports and completions
+    const reportedToday = defects.filter((d) => isToday(d.created_at)).length;
+    const completedToday = defects.filter((d) => d.status === 'Completed' && isToday(d.completed_at)).length;
+
     animateCount(document.getElementById('total'), total);
     animateCount(document.getElementById('completed'), completed);
     animateCount(document.getElementById('active'), active);
+
+    // Show today's counts
+    document.getElementById('total-today').textContent = reportedToday > 0 ? `(+${reportedToday} today)` : '';
+    document.getElementById('completed-today').textContent = completedToday > 0 ? `(+${completedToday} today)` : '';
 
     document.getElementById('pct').textContent = `${pct}%`;
     document.getElementById('ratio').textContent = `${completed} of ${total} resolved`;
@@ -56,53 +73,58 @@ async function load() {
       document.getElementById('bar').style.width = `${Math.min(pct, 100)}%`;
     });
 
-    // Per-area breakdown
-    const counts = AREAS.map((a) => ({
-      name: a,
-      count: defects.filter((d) => d.area === a).length,
-    }));
-    const max = Math.max(1, ...counts.map((c) => c.count));
+    // Combined area breakdown with expandable completed defects
     const wrap = document.getElementById('segments');
     wrap.innerHTML = '';
-    for (const c of counts) {
-      const row = document.createElement('div');
-      row.className = 'seg-row';
-      row.innerHTML = `
-        <span class="name"></span>
-        <span class="track"><span class="fill"></span></span>
-        <span class="count"></span>
-      `;
-      row.querySelector('.name').textContent = c.name;
-      row.querySelector('.count').textContent = c.count;
-      wrap.appendChild(row);
-      requestAnimationFrame(() => {
-        row.querySelector('.fill').style.width = `${(c.count / max) * 100}%`;
-      });
-    }
 
-    // Completed defects list
-    const completedDefects = defects.filter((d) => d.status === 'Completed').reverse();
-    const completedWrap = document.getElementById('completed-list');
-    if (completedDefects.length === 0) {
-      completedWrap.innerHTML = '<p style="text-align: center; color: var(--text-3); padding: 20px;">No completed defects yet.</p>';
-    } else {
-      completedWrap.innerHTML = completedDefects.map((d) => `
-        <div class="completed-defect">
-          <div class="completed-header">
-            <strong>${d.title}</strong>
-            <span class="tag tag-priority priority-${(d.priority || 'low').toLowerCase()}">${d.priority || 'N/A'}</span>
+    for (const area of AREAS) {
+      const defectsInArea = defects.filter((d) => d.area === area);
+      const completedInArea = defectsInArea.filter((d) => d.status === 'Completed');
+      const reportedInArea = defectsInArea.filter((d) => d.status !== 'Completed');
+
+      const areaDiv = document.createElement('div');
+      areaDiv.className = 'area-section-dashboard';
+      areaDiv.innerHTML = `
+        <div class="area-summary">
+          <div class="area-info">
+            <span class="area-name">${area}</span>
+            <span class="area-counts">Reported: ${reportedInArea.length} | Completed: ${completedInArea.length}</span>
           </div>
-          <div class="completed-meta">
-            <span><strong>Area:</strong> ${d.area} ${d.room_name ? '(' + d.room_name + ')' : ''}</span>
-            <span><strong>Reported by:</strong> ${d.reported_by}</span>
-            <span><strong>Completed by:</strong> ${d.completed_by || 'N/A'}</span>
-          </div>
-          <div class="completed-dates">
-            <span class="date-item"><strong>Reported:</strong> ${formatDate(d.created_at)}</span>
-            <span class="date-item"><strong>Completed:</strong> ${formatDate(d.completed_at)}</span>
-          </div>
+          <button type="button" class="btn-toggle-completed" data-area="${area}">
+            Show completed (${completedInArea.length})
+          </button>
         </div>
-      `).join('');
+        <div class="completed-defects-list" style="display: none;">
+          ${completedInArea.length === 0
+            ? '<p style="text-align: center; color: var(--text-3); padding: 10px;">No completed defects in this area.</p>'
+            : completedInArea.map((d) => `
+              <div class="completed-defect-mini">
+                <strong>${d.title}</strong>
+                <span class="tag tag-priority priority-${(d.priority || 'low').toLowerCase()}">${d.priority || 'N/A'}</span>
+                <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 4px;">
+                  Reported by ${d.reported_by} | Completed by ${d.completed_by || 'N/A'}
+                </div>
+                <div style="font-size: 0.7rem; color: var(--text-3); margin-top: 2px;">
+                  ${formatDate(d.created_at)} → ${formatDate(d.completed_at)}
+                </div>
+              </div>
+            `).join('')
+          }
+        </div>
+      `;
+
+      // Add toggle handler
+      const toggleBtn = areaDiv.querySelector('.btn-toggle-completed');
+      const listDiv = areaDiv.querySelector('.completed-defects-list');
+      toggleBtn.addEventListener('click', () => {
+        const isVisible = listDiv.style.display !== 'none';
+        listDiv.style.display = isVisible ? 'none' : 'block';
+        toggleBtn.textContent = isVisible
+          ? `Show completed (${completedInArea.length})`
+          : `Hide completed (${completedInArea.length})`;
+      });
+
+      wrap.appendChild(areaDiv);
     }
   } catch (err) {
     showMsg(msg, 'error', err.message);
