@@ -50,6 +50,11 @@ function renderDefect(d) {
       ${CHEVRON}
     </button>
     <div class="defect-body">
+      <div style="margin-bottom: 12px;">
+        <div style="font-size: 0.85rem; color: var(--text); margin-bottom: 4px;"><strong>${d.title || d.segment}</strong></div>
+        <div style="font-size: 0.75rem; color: var(--text-2); margin-bottom: 8px;">${d.area ? d.area + ' · ' : ''}${d.type || 'N/A'}</div>
+        ${d.priority ? `<span class="tag tag-priority priority-${d.priority.toLowerCase()}">${d.priority}</span>` : ''}
+      </div>
       <figure class="photo-frame">
         <img class="before" alt="Before photo" loading="lazy" />
         <figcaption>Before</figcaption>
@@ -71,8 +76,8 @@ function renderDefect(d) {
   `;
   el.querySelector('.thumb').src = d.before_picture_url;
   el.querySelector('img.before').src = d.before_picture_url;
-  el.querySelector('.info strong').textContent = d.segment;
-  el.querySelector('.info .meta').textContent = `Reported ${formatDate(d.created_at)}`;
+  el.querySelector('.info strong').textContent = d.title || d.segment;
+  el.querySelector('.info .meta').textContent = `${d.area ? d.area + ' · ' : ''}Reported ${formatDate(d.created_at)}`;
 
   const head = el.querySelector('.defect-head');
   head.addEventListener('click', async () => {

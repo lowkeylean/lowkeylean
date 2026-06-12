@@ -905,12 +905,258 @@ textarea {
   color: var(--text-3);
 }
 
+/* ---------- Button Groups (Type, Priority) ---------- */
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.btn-select {
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: var(--font);
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-select:hover {
+  border-color: var(--accent);
+  color: var(--text);
+  transform: translateY(-1px);
+}
+
+.btn-select.active {
+  background: rgba(94, 106, 210, 0.25);
+  border-color: var(--accent);
+  color: var(--accent-bright);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.12);
+}
+
+/* ---------- Photo Upload Container ---------- */
+.photo-upload-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.photo-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 12px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.photo-btn:hover {
+  border-color: var(--accent);
+  background: rgba(94, 106, 210, 0.05);
+  color: var(--text);
+}
+
+.photo-btn input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.photo-btn svg {
+  width: 20px;
+  height: 20px;
+  color: var(--text-3);
+}
+
+.photo-btn:hover svg {
+  color: var(--text-2);
+}
+
+/* ---------- Photo Preview Box ---------- */
+#photo-preview-container {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.photo-preview-box {
+  position: relative;
+  width: 100%;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+}
+
+.photo-preview-box img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 200px;
+  object-fit: cover;
+}
+
+.btn-remove-photo {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.btn-remove-photo:hover {
+  background: rgba(0, 0, 0, 0.7);
+  transform: scale(1.1);
+}
+
+/* ---------- Defects List ---------- */
+.defects-list-container {
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+#defects-list {
+  display: grid;
+  gap: 10px;
+}
+
+.defect-entry {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  animation: rise 0.25s ease;
+}
+
+.defect-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.defect-info strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.defect-info .defect-meta {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.btn-remove-defect {
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid rgba(255, 92, 92, 0.3);
+  border-radius: 6px;
+  color: var(--red);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.btn-remove-defect:hover {
+  background: var(--red-dim);
+  border-color: var(--red);
+}
+
+.defect-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.tag-type {
+  background: rgba(84, 169, 255, 0.12);
+  color: var(--blue);
+  border-color: rgba(84, 169, 255, 0.3);
+}
+
+.tag-priority {
+  border-color: currentColor;
+  background: transparent;
+}
+
+.tag-priority.priority-low {
+  color: var(--green);
+}
+
+.tag-priority.priority-medium {
+  color: var(--amber);
+}
+
+.tag-priority.priority-high {
+  color: var(--blue);
+}
+
+.tag-priority.priority-critical {
+  color: var(--red);
+}
+
+/* Secondary Button Style */
+.btn.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset;
+}
+
+.btn.btn-secondary:hover {
+  border-color: var(--accent);
+  background: linear-gradient(180deg, rgba(94, 106, 210, 0.1), rgba(94, 106, 210, 0.05));
+  filter: none;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 420px) {
   .tabs a { padding: 6px 9px; font-size: 0.73rem; }
   .stats { grid-template-columns: 1fr 1fr; }
   .stats .stat:first-child { grid-column: 1 / -1; }
   .hero h1 { font-size: 1.6rem; }
+  .button-group { grid-template-columns: 1fr 1fr; }
+  .photo-upload-container { grid-template-columns: 1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

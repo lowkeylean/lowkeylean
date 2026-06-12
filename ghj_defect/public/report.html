@@ -32,8 +32,8 @@
 
   <main>
     <div class="page-head">
-      <h1>Report a defect</h1>
-      <p>Select the affected segment and attach one before photo.</p>
+      <h1>Report defects</h1>
+      <p>Log issues with locations, details, and photos. Submit multiple defects at once.</p>
     </div>
 
     <div id="msg" class="msg" role="status"></div>
@@ -47,23 +47,65 @@
 
     <section id="form-card" class="panel" hidden>
       <form id="report-form">
+        <!-- Segment & Area Selection -->
         <label class="field-label" for="segment">Segment</label>
         <select id="segment" required>
-          <option value="" disabled selected>Select affected area</option>
+          <option value="" disabled selected>Select segment</option>
         </select>
 
-        <label class="field-label" for="before">Before photo</label>
-        <label class="dropzone" id="before-zone">
-          <input type="file" id="before" accept="image/*" capture="environment" required />
-          <span class="dz-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          </span>
-          <span class="dz-title">Tap to capture photo</span>
-          <span class="dz-hint">One photo required · compressed automatically</span>
-          <img id="before-preview" class="preview" alt="Before photo preview" />
-        </label>
+        <label class="field-label" for="area">Area / Room</label>
+        <select id="area" required>
+          <option value="" disabled selected>Select after choosing segment</option>
+        </select>
 
-        <button type="submit" id="submit-btn" class="btn"><span class="spinner"></span>Submit defect</button>
+        <!-- Defect Title -->
+        <label class="field-label" for="title">Defect title</label>
+        <input type="text" id="title" placeholder="e.g., Cracked tile, Broken door handle" required />
+
+        <!-- Defect Type -->
+        <label class="field-label">Defect type</label>
+        <div class="button-group" id="type-group">
+          <button type="button" class="btn-select" data-value="Civil">Civil</button>
+          <button type="button" class="btn-select" data-value="Machinery">Machinery</button>
+          <button type="button" class="btn-select" data-value="Other">Other</button>
+        </div>
+
+        <!-- Priority -->
+        <label class="field-label">Priority</label>
+        <div class="button-group" id="priority-group">
+          <button type="button" class="btn-select" data-value="Low">Low</button>
+          <button type="button" class="btn-select" data-value="Medium">Medium</button>
+          <button type="button" class="btn-select" data-value="High">High</button>
+          <button type="button" class="btn-select" data-value="Critical">Critical</button>
+        </div>
+
+        <!-- Photo Upload -->
+        <label class="field-label">Photo</label>
+        <div class="photo-upload-container">
+          <label class="photo-btn photo-capture">
+            <input type="file" id="capture-photo" accept="image/*" capture="environment" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Take photo</span>
+          </label>
+          <label class="photo-btn photo-gallery">
+            <input type="file" id="gallery-photo" accept="image/*" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><rect x="7" y="7" width="4" height="4"/><path d="M7 11l4-4 5 5 4-4"/></svg>
+            <span>Gallery</span>
+          </label>
+        </div>
+        <div id="photo-preview-container"></div>
+
+        <!-- Add Defect Button -->
+        <button type="button" id="add-defect-btn" class="btn btn-secondary">+ Add defect</button>
+
+        <!-- Accumulated Defects List -->
+        <div id="defects-list-container" class="defects-list-container" hidden>
+          <label class="field-label">Defects to submit</label>
+          <div id="defects-list"></div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="btn"><span class="spinner"></span>Submit all defects</button>
       </form>
     </section>
   </main>
