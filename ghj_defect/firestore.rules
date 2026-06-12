@@ -7,9 +7,12 @@ service cloud.firestore {
 
       // New defects must arrive in 'Reported' state with a before photo.
       allow create: if request.auth != null
-        && request.resource.data.segment in ['Public Area', 'Rooms', 'Lobby', 'Kitchen']
-        && request.resource.data.area is string
-        && request.resource.data.area.size() > 0
+        && request.resource.data.area in ['Rooms', 'Public Area', 'Restaurant']
+        && request.resource.data.room_name is string
+        && request.resource.data.room_name.size() > 0
+        && request.resource.data.reported_by is string
+        && request.resource.data.reported_by.size() > 0
+        && request.resource.data.department in ['Managerial', 'Engineering', 'F&B', 'Rooms', 'Housekeeping', 'Others']
         && request.resource.data.title is string
         && request.resource.data.title.size() > 0
         && request.resource.data.type in ['Civil', 'Machinery', 'Other']

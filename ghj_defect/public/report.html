@@ -47,16 +47,37 @@
 
     <section id="form-card" class="panel" hidden>
       <form id="report-form">
-        <!-- Segment & Area Selection -->
-        <label class="field-label" for="segment">Segment</label>
-        <select id="segment" required>
-          <option value="" disabled selected>Select segment</option>
-        </select>
+        <!-- Area Selection (only visible for first defect) -->
+        <div id="area-section">
+          <label class="field-label">Area</label>
+          <div class="button-group" id="area-group">
+            <button type="button" class="btn-select" data-value="Rooms">Rooms</button>
+            <button type="button" class="btn-select" data-value="Public Area">Public Area</button>
+            <button type="button" class="btn-select" data-value="Restaurant">Restaurant</button>
+          </div>
 
-        <label class="field-label" for="area">Area / Room</label>
-        <select id="area" required>
-          <option value="" disabled selected>Select after choosing segment</option>
-        </select>
+          <!-- Room No. / Name (conditional) -->
+          <div id="room-name-section" hidden>
+            <label class="field-label" id="room-name-label">Room No.</label>
+            <input type="text" id="room-name" placeholder="e.g., 101 or Main Lobby" />
+          </div>
+
+          <!-- Reported By -->
+          <label class="field-label" for="reported-by">Reported by</label>
+          <input type="text" id="reported-by" placeholder="Your name" required />
+
+          <!-- Department -->
+          <label class="field-label" for="department">Department</label>
+          <select id="department" required>
+            <option value="" disabled selected>Select department</option>
+            <option value="Managerial">Managerial</option>
+            <option value="Engineering">Engineering</option>
+            <option value="F&B">F&B</option>
+            <option value="Rooms">Rooms</option>
+            <option value="Housekeeping">Housekeeping</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
 
         <!-- Defect Title -->
         <label class="field-label" for="title">Defect title</label>
@@ -104,8 +125,8 @@
           <div id="defects-list"></div>
         </div>
 
-        <!-- Submit Button -->
-        <button type="submit" id="submit-btn" class="btn"><span class="spinner"></span>Submit all defects</button>
+        <!-- Submit Button (only visible when defects exist) -->
+        <button type="submit" id="submit-btn" class="btn" hidden><span class="spinner"></span>Submit all defects</button>
       </form>
     </section>
   </main>

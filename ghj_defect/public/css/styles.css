@@ -1121,18 +1121,26 @@ textarea {
 
 .tag-priority.priority-low {
   color: var(--green);
+  border-color: rgba(46, 204, 142, 0.4);
+  background: rgba(46, 204, 142, 0.1);
 }
 
 .tag-priority.priority-medium {
   color: var(--amber);
+  border-color: rgba(245, 166, 35, 0.4);
+  background: rgba(245, 166, 35, 0.1);
 }
 
 .tag-priority.priority-high {
   color: var(--blue);
+  border-color: rgba(84, 169, 255, 0.4);
+  background: rgba(84, 169, 255, 0.1);
 }
 
 .tag-priority.priority-critical {
   color: var(--red);
+  border-color: rgba(255, 92, 92, 0.4);
+  background: rgba(255, 92, 92, 0.1);
 }
 
 /* Secondary Button Style */

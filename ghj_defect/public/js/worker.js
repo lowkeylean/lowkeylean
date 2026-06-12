@@ -76,8 +76,10 @@ function renderDefect(d) {
   `;
   el.querySelector('.thumb').src = d.before_picture_url;
   el.querySelector('img.before').src = d.before_picture_url;
-  el.querySelector('.info strong').textContent = d.title || d.segment;
-  el.querySelector('.info .meta').textContent = `${d.area ? d.area + ' · ' : ''}Reported ${formatDate(d.created_at)}`;
+  el.querySelector('.info strong').textContent = d.title || d.area || 'Defect';
+  const location = `${d.area}${d.room_name ? ' (' + d.room_name + ')' : ''}`;
+  const reporter = d.reported_by ? ` · ${d.reported_by}` : '';
+  el.querySelector('.info .meta').textContent = `${location}${reporter} · Reported ${formatDate(d.created_at)}`;
 
   const head = el.querySelector('.defect-head');
   head.addEventListener('click', async () => {
