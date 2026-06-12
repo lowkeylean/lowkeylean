@@ -26,8 +26,13 @@ service cloud.firestore {
       allow update: if request.auth != null
         && resource.data.status != 'Completed'
         && request.resource.data.status in ['In Progress', 'Completed']
-        && request.resource.data.segment == resource.data.segment
-        && request.resource.data.before_picture_url == resource.data.before_picture_url;
+        && request.resource.data.area == resource.data.area
+        && request.resource.data.before_picture_url == resource.data.before_picture_url
+        && request.resource.data.reported_by == resource.data.reported_by
+        && request.resource.data.room_name == resource.data.room_name
+        && request.resource.data.title == resource.data.title
+        && request.resource.data.type == resource.data.type
+        && request.resource.data.priority == resource.data.priority;
 
       allow delete: if false;
     }

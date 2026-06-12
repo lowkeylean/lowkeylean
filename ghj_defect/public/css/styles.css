@@ -582,6 +582,21 @@ textarea {
 .pill.in-progress { color: var(--blue);  background: var(--blue-dim);  border-color: rgba(84, 169, 255, 0.3); }
 .pill.completed   { color: var(--green); background: var(--green-dim); border-color: rgba(46, 204, 142, 0.3); }
 
+/* ---------- Area sections (worker queue) ---------- */
+.area-section {
+  margin-bottom: 24px;
+}
+
+.area-header {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin: 20px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border-strong);
+}
+
 /* ---------- Defect list ---------- */
 .defect {
   background: linear-gradient(180deg, var(--surface) 0%, var(--bg-elevated) 100%);
@@ -1155,6 +1170,61 @@ textarea {
   border-color: var(--accent);
   background: linear-gradient(180deg, rgba(94, 106, 210, 0.1), rgba(94, 106, 210, 0.05));
   filter: none;
+}
+
+/* ---------- Completed Defects (dashboard) ---------- */
+.completed-defect {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  margin-bottom: 10px;
+}
+
+.completed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.completed-header strong {
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.completed-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-2);
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.completed-meta span {
+  word-break: break-word;
+}
+
+.completed-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+
+.date-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.date-item strong {
+  color: var(--text-2);
 }
 
 /* ---------- Responsive ---------- */

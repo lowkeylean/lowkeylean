@@ -10,7 +10,9 @@ import { db, authReady, compressImage, configLooksUnset, showMsg } from './app.j
 
 const msg = document.getElementById('msg');
 const list = document.getElementById('list');
+const workerNameInput = document.getElementById('worker-name');
 
+const AREAS = ['Rooms', 'Public Area', 'Restaurant'];
 const CHEVRON =
   '<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>';
 const CAMERA =
@@ -51,8 +53,9 @@ function renderDefect(d) {
     </button>
     <div class="defect-body">
       <div style="margin-bottom: 12px;">
-        <div style="font-size: 0.85rem; color: var(--text); margin-bottom: 4px;"><strong>${d.title || d.segment}</strong></div>
-        <div style="font-size: 0.75rem; color: var(--text-2); margin-bottom: 8px;">${d.area ? d.area + ' · ' : ''}${d.type || 'N/A'}</div>
+        <div style="font-size: 0.75rem; color: var(--text-2); margin-bottom: 8px;">
+          <strong style="color: var(--text);">${d.title || d.area}</strong> · ${d.room_name || d.area} · Reported by ${d.reported_by}
+        </div>
         ${d.priority ? `<span class="tag tag-priority priority-${d.priority.toLowerCase()}">${d.priority}</span>` : ''}
       </div>
       <figure class="photo-frame">
@@ -61,13 +64,21 @@ function renderDefect(d) {
       </figure>
       <form>
         <label class="field-label">After photo</label>
-        <label class="dropzone">
-          <input type="file" name="after" accept="image/*" capture="environment" required />
-          <span class="dz-icon">${CAMERA}</span>
-          <span class="dz-title">Tap to capture photo</span>
-          <span class="dz-hint">Evidence of the completed work</span>
+        <div class="photo-upload-container">
+          <label class="photo-btn photo-capture">
+            <input type="file" name="after-capture" accept="image/*" capture="environment" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Take photo</span>
+          </label>
+          <label class="photo-btn photo-gallery">
+            <input type="file" name="after-gallery" accept="image/*" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><rect x="7" y="7" width="4" height="4"/><path d="M7 11l4-4 5 5 4-4"/></svg>
+            <span>Gallery</span>
+          </label>
+        </div>
+        <div class="photo-preview-box" style="display: none;">
           <img class="preview" alt="After photo preview" />
-        </label>
+        </div>
         <label class="field-label">Remarks</label>
         <textarea name="remarks" placeholder="Describe the fix…" required></textarea>
         <button type="submit" class="btn green"><span class="spinner"></span><span class="text">Mark as completed</span></button>
@@ -76,10 +87,8 @@ function renderDefect(d) {
   `;
   el.querySelector('.thumb').src = d.before_picture_url;
   el.querySelector('img.before').src = d.before_picture_url;
-  el.querySelector('.info strong').textContent = d.title || d.area || 'Defect';
-  const location = `${d.area}${d.room_name ? ' (' + d.room_name + ')' : ''}`;
-  const reporter = d.reported_by ? ` · ${d.reported_by}` : '';
-  el.querySelector('.info .meta').textContent = `${location}${reporter} · Reported ${formatDate(d.created_at)}`;
+  el.querySelector('.info strong').textContent = d.title || d.area;
+  el.querySelector('.info .meta').textContent = `${d.room_name || d.area} · Reported ${formatDate(d.created_at)}`;
 
   const head = el.querySelector('.defect-head');
   head.addEventListener('click', async () => {
@@ -102,18 +111,31 @@ function renderDefect(d) {
     }
   });
 
-  const zone = el.querySelector('.dropzone');
-  const fileInput = el.querySelector('input[type="file"]');
-  const preview = el.querySelector('.preview');
-  fileInput.addEventListener('change', () => {
-    const file = fileInput.files[0];
+  const captureInput = el.querySelector('input[name="after-capture"]');
+  const galleryInput = el.querySelector('input[name="after-gallery"]');
+  const previewBox = el.querySelector('.photo-preview-box');
+  const previewImg = el.querySelector('.preview');
+  let selectedPhoto = null;
+
+  function handlePhotoSelected(file) {
     if (file) {
-      preview.src = URL.createObjectURL(file);
-      zone.classList.add('has-photo');
-      zone.querySelector('.dz-title').textContent = 'Photo attached — tap to retake';
-    } else {
-      zone.classList.remove('has-photo');
-      zone.querySelector('.dz-title').textContent = 'Tap to capture photo';
+      selectedPhoto = file;
+      previewImg.src = URL.createObjectURL(file);
+      previewBox.style.display = 'block';
+    }
+  }
+
+  captureInput.addEventListener('change', () => {
+    if (captureInput.files[0]) {
+      galleryInput.value = '';
+      handlePhotoSelected(captureInput.files[0]);
+    }
+  });
+
+  galleryInput.addEventListener('change', () => {
+    if (galleryInput.files[0]) {
+      captureInput.value = '';
+      handlePhotoSelected(galleryInput.files[0]);
     }
   });
 
@@ -121,22 +143,30 @@ function renderDefect(d) {
     e.preventDefault();
     const btn = e.target.querySelector('button');
     const remarks = e.target.remarks.value.trim();
-    if (fileInput.files.length !== 1) {
+    const workerName = workerNameInput.value.trim();
+
+    if (!selectedPhoto) {
       return showMsg(msg, 'error', 'An after photo is required.');
     }
     if (!remarks) {
       return showMsg(msg, 'error', 'Remarks are required.');
     }
+    if (!workerName) {
+      return showMsg(msg, 'error', 'Please enter your name.');
+    }
 
     setLoading(btn, true, 'Completing…');
     try {
-      const afterPicture = await compressImage(fileInput.files[0]);
+      const afterPicture = await compressImage(selectedPhoto);
+      const now = new Date();
       await updateDoc(doc(db, 'defects', d.id), {
         status: 'Completed',
         after_picture_url: afterPicture,
         remarks,
+        completed_by: workerName,
+        completed_at: now,
       });
-      showMsg(msg, 'ok', `${d.segment} defect closed.`);
+      showMsg(msg, 'ok', `Task completed by ${workerName}`);
       el.remove();
       if (!list.querySelector('.defect')) renderEmpty();
     } catch (err) {
@@ -172,9 +202,28 @@ async function load() {
     const active = snap.docs
       .map((s) => ({ id: s.id, ...s.data() }))
       .filter((d) => d.status !== 'Completed');
+
     list.innerHTML = '';
+
     if (active.length === 0) return renderEmpty();
-    active.forEach((d) => list.appendChild(renderDefect(d)));
+
+    // Group by area
+    const grouped = {};
+    for (const area of AREAS) {
+      grouped[area] = active.filter((d) => d.area === area);
+    }
+
+    // Render sections for each area
+    for (const area of AREAS) {
+      const defectsInArea = grouped[area];
+      if (defectsInArea.length === 0) continue;
+
+      const section = document.createElement('div');
+      section.className = 'area-section';
+      section.innerHTML = `<h2 class="area-header">${area}</h2>`;
+      defectsInArea.forEach((d) => section.appendChild(renderDefect(d)));
+      list.appendChild(section);
+    }
   } catch (err) {
     list.innerHTML = '';
     showMsg(msg, 'error', err.message);
@@ -182,3 +231,4 @@ async function load() {
 }
 
 load();
+setInterval(load, 20000);

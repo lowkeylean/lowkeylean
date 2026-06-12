@@ -3,9 +3,9 @@ import {
   getDocs,
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { db, authReady, configLooksUnset, showMsg } from './app.js';
-import { SEGMENTS } from './firebase-config.js';
 
 const msg = document.getElementById('msg');
+const AREAS = ['Rooms', 'Public Area', 'Restaurant'];
 
 function animateCount(el, target) {
   const start = performance.now();
@@ -17,6 +17,18 @@ function animateCount(el, target) {
     if (t < 1) requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);
+}
+
+function formatDate(ts) {
+  if (!ts) return '—';
+  const date = ts.toDate ? ts.toDate() : new Date(ts);
+  return date.toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 async function load() {
@@ -44,10 +56,10 @@ async function load() {
       document.getElementById('bar').style.width = `${Math.min(pct, 100)}%`;
     });
 
-    // Per-segment breakdown
-    const counts = SEGMENTS.map((s) => ({
-      name: s,
-      count: defects.filter((d) => d.segment === s).length,
+    // Per-area breakdown
+    const counts = AREAS.map((a) => ({
+      name: a,
+      count: defects.filter((d) => d.area === a).length,
     }));
     const max = Math.max(1, ...counts.map((c) => c.count));
     const wrap = document.getElementById('segments');
@@ -66,6 +78,31 @@ async function load() {
       requestAnimationFrame(() => {
         row.querySelector('.fill').style.width = `${(c.count / max) * 100}%`;
       });
+    }
+
+    // Completed defects list
+    const completedDefects = defects.filter((d) => d.status === 'Completed').reverse();
+    const completedWrap = document.getElementById('completed-list');
+    if (completedDefects.length === 0) {
+      completedWrap.innerHTML = '<p style="text-align: center; color: var(--text-3); padding: 20px;">No completed defects yet.</p>';
+    } else {
+      completedWrap.innerHTML = completedDefects.map((d) => `
+        <div class="completed-defect">
+          <div class="completed-header">
+            <strong>${d.title}</strong>
+            <span class="tag tag-priority priority-${(d.priority || 'low').toLowerCase()}">${d.priority || 'N/A'}</span>
+          </div>
+          <div class="completed-meta">
+            <span><strong>Area:</strong> ${d.area} ${d.room_name ? '(' + d.room_name + ')' : ''}</span>
+            <span><strong>Reported by:</strong> ${d.reported_by}</span>
+            <span><strong>Completed by:</strong> ${d.completed_by || 'N/A'}</span>
+          </div>
+          <div class="completed-dates">
+            <span class="date-item"><strong>Reported:</strong> ${formatDate(d.created_at)}</span>
+            <span class="date-item"><strong>Completed:</strong> ${formatDate(d.completed_at)}</span>
+          </div>
+        </div>
+      `).join('');
     }
   } catch (err) {
     showMsg(msg, 'error', err.message);

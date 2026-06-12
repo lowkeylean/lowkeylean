@@ -37,11 +37,15 @@
     </div>
 
     <div id="msg" class="msg" role="status"></div>
-    <div id="list">
-      <div class="skeleton row"></div>
-      <div class="skeleton row"></div>
-      <div class="skeleton row"></div>
-    </div>
+
+    <!-- Worker Name Input -->
+    <section class="panel">
+      <label class="field-label" for="worker-name">Your name</label>
+      <input type="text" id="worker-name" placeholder="Enter your name" autocomplete="off" />
+    </section>
+
+    <!-- Categorized Queue by Area -->
+    <div id="list" class="queue-by-area"></div>
   </main>
 
   <script src="/js/sw-register.js"></script>
