@@ -4,36 +4,38 @@
    ============================================================ */
 
 :root {
-  --bg: #0a0b10;
-  --bg-elevated: #11131c;
-  --surface: #151823;
-  --surface-2: #1a1e2c;
-  --border: rgba(255, 255, 255, 0.07);
-  --border-strong: rgba(255, 255, 255, 0.13);
+  --bg: #06070d;
+  --bg-elevated: #0d0f18;
+  --surface: #141826;
+  --surface-2: #1d2231;
+  --border: rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
 
-  --text: #eef0f6;
-  --text-2: #9aa1b5;
-  --text-3: #636b82;
+  --text: #f1f3f9;
+  --text-2: #a7aec3;
+  --text-3: #6d7691;
 
   --accent: #5e6ad2;
-  --accent-bright: #7c89ff;
-  --accent-glow: rgba(94, 106, 210, 0.35);
+  --accent-bright: #8b97ff;
+  --accent-glow: rgba(94, 106, 210, 0.4);
 
   --green: #2ecc8e;
-  --green-dim: rgba(46, 204, 142, 0.12);
+  --green-dim: rgba(46, 204, 142, 0.14);
   --amber: #f5a623;
-  --amber-dim: rgba(245, 166, 35, 0.12);
+  --amber-dim: rgba(245, 166, 35, 0.14);
   --blue: #54a9ff;
-  --blue-dim: rgba(84, 169, 255, 0.12);
+  --blue-dim: rgba(84, 169, 255, 0.14);
   --red: #ff5c5c;
-  --red-dim: rgba(255, 92, 92, 0.1);
+  --red-dim: rgba(255, 92, 92, 0.12);
 
   --radius: 14px;
   --radius-sm: 10px;
-  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 24px rgba(0, 0, 0, 0.35);
-  --shadow-pop: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-card: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 10px 30px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 20px 56px rgba(0, 0, 0, 0.6);
 
   --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
 * {
@@ -57,15 +59,20 @@ body {
   overflow-x: hidden;
 }
 
-/* Ambient glow behind everything */
+/* Ambient glow + faint blueprint grid behind everything */
 .bg-glow {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(600px 320px at 85% -10%, rgba(94, 106, 210, 0.16), transparent 70%),
-    radial-gradient(500px 280px at -10% 8%, rgba(84, 169, 255, 0.07), transparent 70%);
+    radial-gradient(600px 320px at 85% -10%, rgba(94, 106, 210, 0.18), transparent 70%),
+    radial-gradient(500px 280px at -10% 8%, rgba(84, 169, 255, 0.08), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+  background-size: auto, auto, 34px 34px, 34px 34px;
+  -webkit-mask-image: radial-gradient(circle at 50% 30%, #000 0%, rgba(0, 0, 0, 0.35) 70%, transparent 100%);
+  mask-image: radial-gradient(circle at 50% 30%, #000 0%, rgba(0, 0, 0, 0.35) 70%, transparent 100%);
 }
 
 /* ---------- Top bar ---------- */
@@ -89,8 +96,9 @@ body {
   gap: 10px;
   text-decoration: none;
   color: var(--text);
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.98rem;
   letter-spacing: -0.01em;
   margin-right: auto;
 }
@@ -142,9 +150,9 @@ body {
 }
 
 .tabs a.active {
-  background: var(--surface-2);
-  color: var(--text);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 2px 6px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, rgba(94, 106, 210, 0.32), rgba(94, 106, 210, 0.2));
+  color: #fff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset, 0 2px 8px rgba(94, 106, 210, 0.3);
 }
 
 /* ---------- Layout ---------- */
@@ -161,9 +169,10 @@ main {
 }
 
 .page-head h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: -0.025em;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .page-head p {
@@ -182,9 +191,10 @@ main {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--accent-bright);
   background: rgba(94, 106, 210, 0.12);
@@ -209,10 +219,11 @@ main {
 }
 
 .hero h1 {
-  font-size: 1.9rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.12;
 }
 
 .hero h1 span {
@@ -322,7 +333,8 @@ main {
 }
 
 .panel h2 {
-  font-size: 0.95rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: -0.01em;
   margin-bottom: 16px;
@@ -330,9 +342,10 @@ main {
 
 .field-label {
   display: block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--text-2);
   margin-bottom: 8px;
@@ -463,28 +476,33 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 13px 18px;
+  padding: 14px 18px;
   font-family: var(--font);
   font-size: 0.92rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.005em;
   color: #fff;
-  background: linear-gradient(180deg, #6975e0 0%, var(--accent) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, #717dea 0%, var(--accent) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--radius-sm);
   cursor: pointer;
   touch-action: manipulation;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 6px 18px rgba(94, 106, 210, 0.35);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 8px 22px rgba(94, 106, 210, 0.4);
   transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
 }
 
 .btn:hover {
-  filter: brightness(1.08);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset, 0 8px 26px rgba(94, 106, 210, 0.5);
+  filter: brightness(1.09);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 10px 30px rgba(94, 106, 210, 0.55);
 }
 
 .btn:active {
   transform: scale(0.985);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 0 0 3px var(--bg), 0 0 0 5px var(--accent-bright);
 }
 
 .btn:disabled {
@@ -561,9 +579,11 @@ textarea {
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   padding: 4px 10px;
   border-radius: 99px;
   border: 1px solid;
@@ -588,13 +608,27 @@ textarea {
 }
 
 .area-header {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-2);
   margin: 20px 0 12px;
   padding-bottom: 10px;
-  border-bottom: 2px solid var(--border-strong);
+  border-bottom: 1px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.area-header::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent-bright);
+  box-shadow: 0 0 9px var(--accent-glow);
 }
 
 /* ---------- Defect list ---------- */
@@ -665,8 +699,10 @@ textarea {
 
 .defect-head .info .meta {
   display: block;
-  margin-top: 2px;
-  font-size: 0.73rem;
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: -0.01em;
   color: var(--text-3);
 }
 
@@ -772,25 +808,28 @@ textarea {
 }
 
 .stat .label {
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--text-3);
 }
 
 .stat .value {
-  margin-top: 7px;
-  font-size: 1.75rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
+  font-family: var(--font-mono);
+  margin-top: 9px;
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
 
 .today-count {
+  font-family: var(--font-mono);
   margin-top: 6px;
-  font-size: 0.75rem;
-  color: var(--text-3);
+  font-size: 0.72rem;
+  color: var(--green);
   font-weight: 500;
 }
 
@@ -806,9 +845,10 @@ textarea {
 }
 
 .completion-row .big {
-  font-size: 2.3rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
   background: linear-gradient(90deg, var(--green), var(--blue));
   -webkit-background-clip: text;
@@ -817,7 +857,8 @@ textarea {
 }
 
 .completion-row .sub {
-  font-size: 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
   color: var(--text-3);
   font-variant-numeric: tabular-nums;
 }
@@ -881,8 +922,9 @@ textarea {
 .seg-row:nth-child(4) .fill { background: var(--amber); }
 
 .seg-row .count {
+  font-family: var(--font-mono);
   font-size: 0.8rem;
-  font-weight: 600;
+  font-weight: 500;
   text-align: right;
   font-variant-numeric: tabular-nums;
   color: var(--text-2);
@@ -1122,8 +1164,11 @@ textarea {
 .tag {
   display: inline-flex;
   align-items: center;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   padding: 4px 9px;
   border-radius: 6px;
   border: 1px solid;
