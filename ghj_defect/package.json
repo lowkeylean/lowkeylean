@@ -1,0 +1,11 @@
+{
+  "name": "ghj-defect",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@vercel/blob": "^0.27.0",
+    "firebase-admin": "^13.0.0",
+    "resend": "^4.0.0",
+    "pdfkit": "^0.16.0"
+  }
+}

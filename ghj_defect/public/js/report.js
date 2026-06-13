@@ -3,7 +3,7 @@ import {
   addDoc,
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
-import { db, authReady, compressImage, configLooksUnset, showMsg, clearMsg } from './app.js';
+import { db, authReady, compressAndUpload, configLooksUnset, showMsg, clearMsg } from './app.js';
 import { ACCESS_CODE } from './firebase-config.js';
 
 const msg = document.getElementById('msg');
@@ -180,7 +180,7 @@ addDefectBtn.addEventListener('click', async (e) => {
 
   setLoading(addDefectBtn, true, 'Adding…');
   try {
-    const photoData = await compressImage(currentPhoto);
+    const photoData = await compressAndUpload(currentPhoto);
 
     const defect = {
       area: reportingInfo.area,

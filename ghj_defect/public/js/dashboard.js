@@ -131,5 +131,35 @@ async function load() {
   }
 }
 
+async function loadReports() {
+  const el = document.getElementById('reports-list');
+  try {
+    const res = await fetch('/api/reports');
+    if (!res.ok) throw new Error('unavailable');
+    const reports = await res.json();
+    if (reports.length === 0) {
+      el.innerHTML = '<p style="color: var(--text-3); font-size: 0.85rem; text-align: center; padding: 12px 0;">No reports generated yet.</p>';
+      return;
+    }
+    el.innerHTML = reports.map((r) => `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border);">
+        <div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: var(--text);">${r.week}</div>
+          <div style="font-size: 0.75rem; color: var(--text-3); margin-top: 2px;">
+            ${r.completed_count} completed · ${r.defect_count} total · ${r.active_count} active
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <a href="${r.pdf_url}" target="_blank" rel="noopener" style="font-size: 0.75rem; color: var(--accent); text-decoration: none; padding: 4px 8px; border: 1px solid var(--accent); border-radius: 6px;">PDF</a>
+          <a href="${r.csv_url}" target="_blank" rel="noopener" style="font-size: 0.75rem; color: var(--text-2); text-decoration: none; padding: 4px 8px; border: 1px solid var(--border); border-radius: 6px;">CSV</a>
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    el.innerHTML = '<p style="color: var(--text-3); font-size: 0.85rem; text-align: center; padding: 12px 0;">Reports not available.</p>';
+  }
+}
+
 load();
 setInterval(load, 20000);
+loadReports();

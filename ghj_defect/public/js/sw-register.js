@@ -3,14 +3,14 @@
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
     try {
-      if (!localStorage.getItem('sw-v2-purged')) {
+      if (!localStorage.getItem('sw-v3-purged')) {
         const regs = await navigator.serviceWorker.getRegistrations();
         await Promise.all(regs.map((r) => r.unregister()));
         if (window.caches) {
           const keys = await caches.keys();
           await Promise.all(keys.map((k) => caches.delete(k)));
         }
-        localStorage.setItem('sw-v2-purged', '1');
+        localStorage.setItem('sw-v3-purged', '1');
         if (regs.length > 0) {
           location.reload();
           return;

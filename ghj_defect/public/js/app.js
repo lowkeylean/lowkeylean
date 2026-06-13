@@ -38,9 +38,25 @@ export function configLooksUnset() {
   return firebaseConfig.apiKey === 'YOUR_API_KEY';
 }
 
-// Compress a photo client-side so it fits comfortably inside a Firestore
-// document (1 MiB limit). Returns a JPEG data URL.
-export async function compressImage(file, maxDim = 1024, quality = 0.7) {
+// Compress a photo client-side and upload to Vercel Blob. Returns the public URL.
+export async function compressAndUpload(file) {
+  const dataUrl = await compressImage(file);
+  const res = await fetch(dataUrl);
+  const blob = await res.blob();
+  const uploadRes = await fetch('/api/blob-upload', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'image/jpeg',
+      'x-filename': `defect-${Date.now()}.jpg`,
+    },
+    body: blob,
+  });
+  if (!uploadRes.ok) throw new Error('Image upload failed');
+  const { url } = await uploadRes.json();
+  return url;
+}
+
+async function compressImage(file, maxDim = 1024, quality = 0.7) {
   const bitmap = await createImageBitmap(file);
   const scale = Math.min(1, maxDim / Math.max(bitmap.width, bitmap.height));
   const canvas = document.createElement('canvas');
@@ -50,7 +66,6 @@ export async function compressImage(file, maxDim = 1024, quality = 0.7) {
   bitmap.close();
 
   let dataUrl = canvas.toDataURL('image/jpeg', quality);
-  // Retry smaller if still too large for a Firestore document.
   if (dataUrl.length > 900_000) {
     return compressImage(file, Math.round(maxDim * 0.6), 0.55);
   }

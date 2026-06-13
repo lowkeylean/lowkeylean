@@ -1,6 +1,6 @@
 // Network-first service worker: always serve the latest deploy when online,
 // fall back to cache when offline. Bumping CACHE invalidates old shells.
-const CACHE = 'ghj-defect-v2';
+const CACHE = 'ghj-defect-v3';
 const SHELL = [
   '/',
   '/report.html',
@@ -27,7 +27,7 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
-  if (event.request.method !== 'GET' || url.origin !== self.location.origin) return;
+  if (event.request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/')) return;
 
   event.respondWith(
     fetch(event.request)

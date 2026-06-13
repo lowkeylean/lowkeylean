@@ -6,7 +6,7 @@ import {
   doc,
   updateDoc,
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
-import { db, authReady, compressImage, configLooksUnset, showMsg } from './app.js';
+import { db, authReady, compressAndUpload, configLooksUnset, showMsg } from './app.js';
 
 const msg = document.getElementById('msg');
 const list = document.getElementById('list');
@@ -85,8 +85,10 @@ function renderDefect(d) {
       </form>
     </div>
   `;
-  el.querySelector('.thumb').src = d.before_picture_url;
-  el.querySelector('img.before').src = d.before_picture_url;
+  if (d.before_picture_url) {
+    el.querySelector('.thumb').src = d.before_picture_url;
+    el.querySelector('img.before').src = d.before_picture_url;
+  }
   el.querySelector('.info strong').textContent = d.title || d.area;
   el.querySelector('.info .meta').textContent = `${d.room_name || d.area} · Reported ${formatDate(d.created_at)}`;
 
@@ -157,7 +159,7 @@ function renderDefect(d) {
 
     setLoading(btn, true, 'Completing…');
     try {
-      const afterPicture = await compressImage(selectedPhoto);
+      const afterPicture = await compressAndUpload(selectedPhoto);
       const now = new Date();
       await updateDoc(doc(db, 'defects', d.id), {
         status: 'Completed',

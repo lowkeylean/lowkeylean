@@ -1,0 +1,12 @@
+{
+  "outputDirectory": "public",
+  "headers": [
+    {
+      "source": "/(.*\\.(?:html|css|js|webmanifest))",
+      "headers": [{ "key": "Cache-Control", "value": "no-cache" }]
+    }
+  ],
+  "crons": [
+    { "path": "/api/cron/weekly-report", "schedule": "0 6 * * 1" }
+  ]
+}
