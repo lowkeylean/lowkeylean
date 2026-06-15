@@ -50,9 +50,16 @@ export function configLooksUnset() {
 export async function compressAndUpload(file) {
   const dataUrl = await compressImage(file);
   try {
+    // Attach the visitor's Firebase ID token so the server can confirm the
+    // upload comes from an authenticated session, not an anonymous script.
+    const user = await authReady();
+    const idToken = await user.getIdToken();
     const uploadRes = await fetch('/api/blob-upload', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${idToken}`,
+      },
       body: JSON.stringify({ data: dataUrl, filename: `defect-${Date.now()}.jpg` }),
     });
     if (uploadRes.ok) {

@@ -2,6 +2,16 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // A room_name is only valid for its area: rooms are 3–4 digit numbers,
+    // and public areas / restaurants must match the known list. This rejects
+    // arbitrary strings written by anything bypassing the UI combobox. The
+    // small lists mirror public/js/locations.js — keep them in sync if edited.
+    function validRoomName(area, name) {
+      return (area == 'Rooms' && name.matches('^[0-9]{3,4}$'))
+        || (area == 'Public Area' && name in ['Lobby', 'Business Centre', 'Pool Area', 'Car Check', 'Driveway', 'Fountain Lounge', 'Front Office', 'Elevators'])
+        || (area == 'Restaurant' && name in ['Grand Cafe', 'Poolside', 'Fountain Lounge', 'Club Italiano', 'Sumire']);
+    }
+
     match /defects/{defectId} {
       allow read: if request.auth != null;
 
@@ -10,6 +20,7 @@ service cloud.firestore {
         && request.resource.data.area in ['Rooms', 'Public Area', 'Restaurant']
         && request.resource.data.room_name is string
         && request.resource.data.room_name.size() > 0
+        && validRoomName(request.resource.data.area, request.resource.data.room_name)
         && request.resource.data.reported_by is string
         && request.resource.data.reported_by.size() > 0
         && request.resource.data.department in ['Managerial', 'Engineering', 'F&B', 'Rooms', 'Housekeeping', 'Others']

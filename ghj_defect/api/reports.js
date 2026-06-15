@@ -1,7 +1,13 @@
 const { initAdmin, adminDb } = require('./_firebase');
+const { rateLimit, clientIp } = require('./_ratelimit');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).end();
+  const limit = rateLimit(`reports:${clientIp(req)}`, { limit: 60, windowMs: 60_000 });
+  if (!limit.ok) {
+    res.setHeader('Retry-After', String(limit.retryAfter));
+    return res.status(429).json({ error: 'Too many requests' });
+  }
   try {
     initAdmin();
     const snap = await adminDb()
