@@ -4,6 +4,7 @@ import {
   serverTimestamp,
 } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
 import { db, authReady, compressAndUpload, configLooksUnset, showMsg, clearMsg } from './app.js';
+import { loadLocations, getLocationsByType } from './locations.js';
 import { ACCESS_CODE } from './firebase-config.js';
 
 const msg = document.getElementById('msg');
@@ -54,18 +55,28 @@ function unlock() {
   clearMsg(msg);
 }
 
-// Area Selection
-areaGroup.addEventListener('click', (e) => {
+// Area Selection + Location Loading
+areaGroup.addEventListener('click', async (e) => {
   if (e.target.classList.contains('btn-select')) {
     areaGroup.querySelectorAll('.btn-select').forEach(btn => btn.classList.remove('active'));
     e.target.classList.add('active');
     selectedArea = e.target.dataset.value;
 
-    // Update Room No. / Name label and placeholder
+    // Update Room No. / Name label
     const isRooms = selectedArea === 'Rooms';
     roomNameLabel.textContent = isRooms ? 'Room No.' : 'Name';
-    roomNameInput.placeholder = isRooms ? 'e.g., 101' : 'e.g., Main Lobby';
     roomNameSection.hidden = false;
+
+    // Load and populate dropdown
+    await loadLocations();
+    const locations = getLocationsByType(selectedArea);
+    roomNameInput.innerHTML = '<option value="">— Select —</option>';
+    locations.forEach(loc => {
+      const opt = document.createElement('option');
+      opt.value = loc.name;
+      opt.textContent = loc.display;
+      roomNameInput.appendChild(opt);
+    });
   }
 });
 
