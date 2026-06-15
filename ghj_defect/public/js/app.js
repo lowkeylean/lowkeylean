@@ -38,22 +38,31 @@ export function configLooksUnset() {
   return firebaseConfig.apiKey === 'YOUR_API_KEY';
 }
 
-// Compress a photo client-side and upload to Vercel Blob. Returns the public URL.
+// Compress a photo client-side, then store it. Prefers Vercel Blob object
+// storage; if that endpoint isn't reachable (e.g. not deployed on Vercel, or
+// the Blob token isn't configured yet) it falls back to an inline base64 data
+// URL so reporting never breaks. Both forms are valid <img src> values and
+// satisfy the Firestore rules, so the app stays functional on any host.
 export async function compressAndUpload(file) {
   const dataUrl = await compressImage(file);
-  const res = await fetch(dataUrl);
-  const blob = await res.blob();
-  const uploadRes = await fetch('/api/blob-upload', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'image/jpeg',
-      'x-filename': `defect-${Date.now()}.jpg`,
-    },
-    body: blob,
-  });
-  if (!uploadRes.ok) throw new Error('Image upload failed');
-  const { url } = await uploadRes.json();
-  return url;
+  try {
+    const blob = await (await fetch(dataUrl)).blob();
+    const uploadRes = await fetch('/api/blob-upload', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'image/jpeg',
+        'x-filename': `defect-${Date.now()}.jpg`,
+      },
+      body: blob,
+    });
+    if (uploadRes.ok) {
+      const data = await uploadRes.json().catch(() => null);
+      if (data && typeof data.url === 'string' && data.url) return data.url;
+    }
+  } catch (err) {
+    console.warn('Blob upload unavailable, storing image inline.', err);
+  }
+  return dataUrl;
 }
 
 async function compressImage(file, maxDim = 1024, quality = 0.7) {
