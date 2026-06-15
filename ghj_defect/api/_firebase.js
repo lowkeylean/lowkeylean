@@ -7,5 +7,6 @@ function initAdmin() {
 }
 
 const adminDb = () => admin.firestore();
+const adminAuth = () => admin.auth();
 
-module.exports = { initAdmin, adminDb };
+module.exports = { initAdmin, adminDb, adminAuth };

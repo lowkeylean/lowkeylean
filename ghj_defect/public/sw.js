@@ -1,6 +1,6 @@
 // Network-first service worker: always serve the latest deploy when online,
 // fall back to cache when offline. Bumping CACHE invalidates old shells.
-const CACHE = 'ghj-defect-v3';
+const CACHE = 'ghj-defect-v4';
 const SHELL = [
   '/',
   '/report.html',
