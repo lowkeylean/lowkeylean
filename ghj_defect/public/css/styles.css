@@ -405,6 +405,55 @@ textarea {
   color: var(--text-3);
 }
 
+/* ---------- Searchable combobox (room / location) ---------- */
+.combo {
+  position: relative;
+  margin-bottom: 18px;
+}
+
+.combo input {
+  margin-bottom: 0;
+}
+
+.combo-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  max-height: 248px;
+  overflow-y: auto;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-pop);
+  padding: 5px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.combo-option {
+  padding: 11px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+
+.combo-option:hover,
+.combo-option.active {
+  background: rgba(94, 106, 210, 0.2);
+  color: var(--accent-bright);
+}
+
+.combo-empty {
+  padding: 12px;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  text-align: center;
+}
+
 /* ---------- Photo dropzone ---------- */
 .dropzone {
   display: block;

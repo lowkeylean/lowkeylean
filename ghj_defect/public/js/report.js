@@ -15,6 +15,7 @@ const areaGroup = document.getElementById('area-group');
 const roomNameSection = document.getElementById('room-name-section');
 const roomNameLabel = document.getElementById('room-name-label');
 const roomNameInput = document.getElementById('room-name');
+const roomOptions = document.getElementById('room-options');
 const reportedByInput = document.getElementById('reported-by');
 const departmentSelect = document.getElementById('department');
 const titleInput = document.getElementById('title');
@@ -36,6 +37,8 @@ let selectedType = null;
 let selectedPriority = null;
 let currentPhoto = null;
 let defectsArray = [];
+let currentLocations = [];
+let validLocationNames = new Set();
 let reportingInfo = {
   area: null,
   roomName: null,
@@ -62,22 +65,50 @@ areaGroup.addEventListener('click', async (e) => {
     e.target.classList.add('active');
     selectedArea = e.target.dataset.value;
 
-    // Update Room No. / Name label
+    // Update Room No. / Name label + search placeholder
     const isRooms = selectedArea === 'Rooms';
     roomNameLabel.textContent = isRooms ? 'Room No.' : 'Name';
+    roomNameInput.placeholder = isRooms ? 'Type a room number…' : 'Type to search…';
     roomNameSection.hidden = false;
 
-    // Load and populate dropdown
+    // Load options for this area into the searchable combobox
     await loadLocations();
-    const locations = getLocationsByType(selectedArea);
-    roomNameInput.innerHTML = '<option value="">— Select —</option>';
-    locations.forEach(loc => {
-      const opt = document.createElement('option');
-      opt.value = loc.name;
-      opt.textContent = loc.display;
-      roomNameInput.appendChild(opt);
-    });
+    currentLocations = getLocationsByType(selectedArea);
+    validLocationNames = new Set(currentLocations.map((l) => l.name));
+    roomNameInput.value = '';
+    roomOptions.hidden = true;
   }
+});
+
+// Searchable combobox: filter options as the user types
+function renderRoomOptions(filter = '') {
+  const f = filter.trim().toLowerCase();
+  const matches = currentLocations
+    .filter((o) => !f || o.name.toLowerCase().includes(f) || o.display.toLowerCase().includes(f))
+    .slice(0, 60);
+
+  if (matches.length === 0) {
+    roomOptions.innerHTML = '<div class="combo-empty">No matches</div>';
+  } else {
+    roomOptions.innerHTML = matches
+      .map((o) => `<div class="combo-option" data-name="${o.name}">${o.display}</div>`)
+      .join('');
+  }
+  roomOptions.hidden = false;
+}
+
+roomNameInput.addEventListener('focus', () => renderRoomOptions(roomNameInput.value));
+roomNameInput.addEventListener('input', () => renderRoomOptions(roomNameInput.value));
+roomNameInput.addEventListener('blur', () => {
+  // Delay so an option click registers before the panel hides
+  setTimeout(() => { roomOptions.hidden = true; }, 150);
+});
+roomOptions.addEventListener('pointerdown', (e) => {
+  const opt = e.target.closest('.combo-option');
+  if (!opt) return;
+  e.preventDefault();
+  roomNameInput.value = opt.dataset.name;
+  roomOptions.hidden = true;
 });
 
 // Type Selection
@@ -157,8 +188,8 @@ addDefectBtn.addEventListener('click', async (e) => {
     if (!selectedArea) {
       return showMsg(msg, 'error', 'Please select an area.');
     }
-    if (!roomNameInput.value.trim()) {
-      return showMsg(msg, 'error', `Please enter ${selectedArea === 'Rooms' ? 'room no.' : 'name'}.`);
+    if (!validLocationNames.has(roomNameInput.value.trim())) {
+      return showMsg(msg, 'error', `Please select a valid ${selectedArea === 'Rooms' ? 'room' : 'location'} from the list.`);
     }
     if (!reportedByInput.value.trim()) {
       return showMsg(msg, 'error', 'Please enter reported by name.');

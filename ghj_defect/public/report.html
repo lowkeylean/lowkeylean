@@ -56,12 +56,13 @@
             <button type="button" class="btn-select" data-value="Restaurant">Restaurant</button>
           </div>
 
-          <!-- Room No. / Name (conditional) -->
+          <!-- Room No. / Name (conditional, searchable) -->
           <div id="room-name-section" hidden>
             <label class="field-label" id="room-name-label">Room No.</label>
-            <select id="room-name" required>
-              <option value="">— Select —</option>
-            </select>
+            <div class="combo">
+              <input type="text" id="room-name" autocomplete="off" placeholder="Type to search…" />
+              <div class="combo-options" id="room-options" hidden></div>
+            </div>
           </div>
 
           <!-- Reported By -->
