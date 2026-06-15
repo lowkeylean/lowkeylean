@@ -1,6 +1,6 @@
 {
-  "name": "GHJ Defect Manager",
-  "short_name": "Defects",
+  "name": "Grand Hyatt Defect Management System",
+  "short_name": "GH Defects",
   "description": "Report, track, and complete facility defects",
   "start_url": "/",
   "display": "standalone",

@@ -34,7 +34,7 @@ function buildPDF(weekLabel, stats, completedDefects) {
     doc.on('data', (c) => chunks.push(c));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
 
-    doc.fontSize(20).font('Helvetica-Bold').text('GHJ Defect Manager');
+    doc.fontSize(20).font('Helvetica-Bold').text('Grand Hyatt Defect Management System');
     doc.fontSize(12).font('Helvetica').fillColor('#555555').text(`Weekly Report — ${weekLabel}`);
     doc.moveDown(0.5);
     doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#cccccc').stroke();
@@ -134,10 +134,10 @@ module.exports = async function handler(req, res) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: process.env.REPORT_EMAIL_FROM || 'GHJ Defects <onboarding@resend.dev>',
+        from: process.env.REPORT_EMAIL_FROM || 'Grand Hyatt Defects <onboarding@resend.dev>',
         to: process.env.REPORT_EMAIL_TO,
-        subject: `Weekly Defect Report — ${weekLabel}`,
-        html: `<p>Weekly GHJ Defect Manager report for <strong>${weekLabel}</strong>.</p>
+        subject: `Grand Hyatt — Weekly Defect Report — ${weekLabel}`,
+        html: `<p>Weekly Grand Hyatt Defect Management System report for <strong>${weekLabel}</strong>.</p>
                <ul>
                  <li>Total defects: ${stats.total}</li>
                  <li>Completed this week: ${stats.completedThisWeek}</li>
