@@ -43,17 +43,17 @@ export function configLooksUnset() {
 // the Blob token isn't configured yet) it falls back to an inline base64 data
 // URL so reporting never breaks. Both forms are valid <img src> values and
 // satisfy the Firestore rules, so the app stays functional on any host.
+//
+// The image is sent as base64 inside a JSON body rather than as a raw binary
+// stream: Vercel's Node runtime parses JSON bodies predictably, whereas a raw
+// stream can be consumed before the function reads it, dropping the image.
 export async function compressAndUpload(file) {
   const dataUrl = await compressImage(file);
   try {
-    const blob = await (await fetch(dataUrl)).blob();
     const uploadRes = await fetch('/api/blob-upload', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'image/jpeg',
-        'x-filename': `defect-${Date.now()}.jpg`,
-      },
-      body: blob,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ data: dataUrl, filename: `defect-${Date.now()}.jpg` }),
     });
     if (uploadRes.ok) {
       const data = await uploadRes.json().catch(() => null);
