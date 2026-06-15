@@ -1,37 +1,69 @@
-// Locations helper: cache and provide room/area/restaurant lists
-import { db } from './app.js';
-import { collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js';
+// Location registry — the source of truth for valid report destinations.
+// Defined in code so the dropdowns work everywhere with zero setup. Each
+// defect stores `area` + `room_name`, so per-location defect/repair history is
+// derived from the `defects` collection (filter by area + room_name).
+//
+// To add/remove a room or area later, just edit the lists below and redeploy.
 
-let locCache = null;
-let locPromise = null;
+export const ROOMS = [
+  '601','602','603','604','606','607','608','609','610','611','612','613','614','615','616','617','618','619','620','621','622','623','624','625',
+  '701','702','703','704','706','707','708','709','710','711','712','713','714','715','716','717','718','719','720','721','722','723','724','725','727',
+  '801','802','803','804','806','807','808','809','810','811','812','813','814','815','816','817','818','819','820','821','822','823','824','825','827',
+  '901','902','903','904','906','907','908','909','910','911','912','913','914','915','916','917','918','919','920','921','922','923','924','925','927',
+  '1001','1002','1003','1004','1006','1007','1008','1009','1010','1011','1012','1013','1014','1015','1016','1017','1018','1019','1020','1021','1022','1023','1024','1025','1027',
+  '1101','1102','1103','1104','1106','1107','1108','1109','1110','1111','1112','1113','1114','1115','1116','1117','1118','1119','1120','1121','1122','1123','1124','1125','1127',
+  '1201','1202','1203','1204','1206','1207','1208','1209','1210','1211','1212','1213','1214','1215','1216','1217','1218','1219','1220','1221','1222','1223','1224','1225','1227',
+  '1301','1302','1303','1304','1306','1307','1308','1309','1310','1311','1312','1313','1314','1315','1316','1317','1318','1319','1320','1321','1322','1323','1324','1325','1327',
+  '1401','1402','1403','1404','1406','1407','1408','1409','1410','1411','1412','1413','1414','1415','1416','1417','1418','1419','1420','1421','1422','1423','1424','1425','1427',
+  '1501','1502','1503','1504','1506','1507','1508','1509','1510','1511','1512','1513','1514','1515','1516','1517','1518','1519','1520','1521','1522','1523','1524','1525','1527',
+  '1601','1602','1603','1604','1606','1607','1608','1609','1610','1611','1612','1613','1614','1615','1616','1617','1618','1619','1620','1621','1622','1623','1624','1625','1627',
+  '1701','1702','1703','1704','1706','1707','1708','1709','1710','1711','1712','1713','1714','1715','1716','1717','1718','1719','1720','1721','1722','1723','1724','1725','1727',
+  '1801','1802','1803','1804','1806','1807','1808','1809','1810','1811','1812','1813','1814','1815','1816','1817','1818','1819','1820','1821','1822','1823','1824','1825','1827',
+  '1901','1902','1903','1904','1906','1907','1908','1909','1910','1911','1912','1913','1914','1915','1916','1917','1918','1919','1920','1921','1922','1923','1924','1925','1927',
+  '2001','2002','2003','2004','2006','2007','2008','2009','2010','2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025',
+  '2101','2102','2103','2104','2105','2106','2107','2108','2109','2110','2111','2114','2115','2116','2117','2118','2119','2120','2121','2122','2123','2124','2125',
+  '2207','2208','2209','2210','2211','2214','2215','2216','2217','2218','2219','2221',
+  '2301','2302','2303','2304','2305','2306','2307','2314','2315','2316','2317',
+  '2401','2402','2403','2407','2411','2412','2413','2416','2417',
+  '2501','2502','2503','2508','2509',
+  '2611','2612',
+];
 
+export const PUBLIC_AREAS = [
+  'Lobby',
+  'Business Centre',
+  'Pool Area',
+  'Car Check',
+  'Driveway',
+  'Fountain Lounge',
+  'Front Office',
+  'Elevators',
+];
+
+export const RESTAURANTS = [
+  'Grand Cafe',
+  'Poolside',
+  'Fountain Lounge',
+  'Club Italiano',
+  'Sumire',
+];
+
+function toEntries(names, displayPrefix = '') {
+  return names.map((name) => ({
+    name,
+    display: displayPrefix ? `${displayPrefix}${name}` : name,
+  }));
+}
+
+// Kept async so callers can `await` it; resolves instantly from the lists
+// above, and could later be swapped for a Firestore-backed source.
 export async function loadLocations() {
-  if (locCache) return locCache;
-  if (locPromise) return locPromise;
-
-  locPromise = (async () => {
-    try {
-      const snap = await getDocs(collection(db, 'locations'));
-      const all = snap.docs.map(d => d.data());
-      locCache = {
-        rooms: all.filter(l => l.type === 'Rooms').sort((a, b) => parseInt(a.name) - parseInt(b.name)),
-        publicAreas: all.filter(l => l.type === 'Public Area').sort((a, b) => a.name.localeCompare(b.name)),
-        restaurants: all.filter(l => l.type === 'Restaurant').sort((a, b) => a.name.localeCompare(b.name)),
-      };
-      return locCache;
-    } catch (err) {
-      console.warn('Failed to load locations:', err);
-      return { rooms: [], publicAreas: [], restaurants: [] };
-    }
-  })();
-
-  return locPromise;
+  return true;
 }
 
 export function getLocationsByType(type) {
-  if (!locCache) return [];
-  if (type === 'Rooms') return locCache.rooms;
-  if (type === 'Public Area') return locCache.publicAreas;
-  if (type === 'Restaurant') return locCache.restaurants;
+  if (type === 'Rooms') return toEntries(ROOMS, 'Room ');
+  if (type === 'Public Area') return toEntries(PUBLIC_AREAS);
+  if (type === 'Restaurant') return toEntries(RESTAURANTS);
   return [];
 }
