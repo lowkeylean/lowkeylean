@@ -128,9 +128,9 @@ function renderSummary() {
 
 function renderMatrix() {
   root.innerHTML = [
-    renderRooms(),
     renderNamedSection('Public Areas', 'Public Area', PUBLIC_AREAS),
     renderNamedSection('Restaurants', 'Restaurant', RESTAURANTS),
+    renderRooms(),
   ].join('');
 }
 
