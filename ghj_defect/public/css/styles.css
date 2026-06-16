@@ -59,6 +59,10 @@ body {
   overflow-x: hidden;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 /* Ambient glow + faint blueprint grid behind everything */
 .bg-glow {
   position: fixed;
