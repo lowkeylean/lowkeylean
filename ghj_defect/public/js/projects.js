@@ -67,6 +67,13 @@ function unlocked() {
   return sessionStorage.getItem('accessCode') === ACCESS_CODE;
 }
 
+// True while the new-project or detail modal is open. Used to pause the
+// background refresh so it can't re-render the list out from under an open
+// modal (which would detach the triggering card and break focus restore).
+function modalOpen() {
+  return !pdModal.hidden || !npModal.hidden;
+}
+
 function todayStr() {
   const d = new Date();
   const off = d.getTimezoneOffset();
@@ -298,13 +305,16 @@ function wireDetail(p) {
       setLoading(saveBtn, true, 'Saving…');
       try {
         await authReady();
-        await updateDoc(doc(db, 'projects', p.id), {
+        const update = {
           status,
           progress,
           target_date: target,
-          last_update: note ?? p.last_update ?? null,
           updated_at: serverTimestamp(),
-        });
+        };
+        // Only touch last_update when the user actually wrote a note, so a
+        // blank note can't overwrite a newer note with this modal's snapshot.
+        if (note) update.last_update = note;
+        await updateDoc(doc(db, 'projects', p.id), update);
         showMsg(msg, 'ok', 'Project updated.');
         closeDetail();
         await load();
@@ -512,4 +522,7 @@ async function load() {
 }
 
 load();
-setInterval(load, 30000);
+// Pause the periodic refresh while a modal is open, so it never re-renders
+// the list under the user's feet (preserves the card node + focus, and keeps
+// the open update form consistent with what they're editing).
+setInterval(() => { if (!modalOpen()) load(); }, 30000);
