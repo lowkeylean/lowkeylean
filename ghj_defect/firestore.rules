@@ -8,8 +8,8 @@ service cloud.firestore {
     // small lists mirror public/js/locations.js — keep them in sync if edited.
     function validRoomName(area, name) {
       return (area == 'Rooms' && name.matches('^[0-9]{3,4}$'))
-        || (area == 'Public Area' && name in ['Lobby', 'Business Centre', 'Pool Area', 'Car Check', 'Driveway', 'Fountain Lounge', 'Front Office', 'Elevators'])
-        || (area == 'Restaurant' && name in ['Grand Cafe', 'Poolside', 'Fountain Lounge', 'Club Italiano', 'Sumire']);
+        || (area == 'Public Area' && name in ['Lobby', 'Business Centre', 'Pool Area', 'Car Check', 'Driveway', 'Fountain Lounge', 'Front Office', 'Elevators', 'Olympus Male', 'Olympus Female', 'Tennis Court', 'Public Restrooms L3', 'Public Restrooms L4'])
+        || (area == 'Restaurant' && name in ['Grand Cafe', 'Poolside', 'Fountain Lounge', 'Club Italiano', 'Sumire', 'Grand Club', 'Cheers', 'Pierre Herme', 'Banquet']);
     }
 
     match /defects/{defectId} {
@@ -44,6 +44,45 @@ service cloud.firestore {
         && request.resource.data.title == resource.data.title
         && request.resource.data.type == resource.data.type
         && request.resource.data.priority == resource.data.priority;
+
+      allow delete: if false;
+    }
+
+    // Projects are longer, planned pieces of work tied to a location (the same
+    // Rooms / Public Area / Restaurant list as defects). They carry a timeline,
+    // a person-in-charge (PIC), and a planning scope, and are updated over time
+    // as work progresses.
+    match /projects/{projectId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.area in ['Rooms', 'Public Area', 'Restaurant']
+        && request.resource.data.room_name is string
+        && request.resource.data.room_name.size() > 0
+        && validRoomName(request.resource.data.area, request.resource.data.room_name)
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.pic is string
+        && request.resource.data.pic.size() > 0
+        && request.resource.data.status in ['Planned', 'In Progress', 'On Hold', 'Completed']
+        && request.resource.data.priority in ['Low', 'Medium', 'High', 'Critical']
+        && request.resource.data.progress is number
+        && request.resource.data.progress >= 0
+        && request.resource.data.progress <= 100;
+
+      // Updates may revise the plan, timeline, status and progress, but never
+      // the project's identity (which location/title it is, or when it was
+      // created).
+      allow update: if request.auth != null
+        && request.resource.data.area == resource.data.area
+        && request.resource.data.room_name == resource.data.room_name
+        && request.resource.data.title == resource.data.title
+        && request.resource.data.created_at == resource.data.created_at
+        && request.resource.data.status in ['Planned', 'In Progress', 'On Hold', 'Completed']
+        && request.resource.data.priority in ['Low', 'Medium', 'High', 'Critical']
+        && request.resource.data.progress is number
+        && request.resource.data.progress >= 0
+        && request.resource.data.progress <= 100;
 
       allow delete: if false;
     }

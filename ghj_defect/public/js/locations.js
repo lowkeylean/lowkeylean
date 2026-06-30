@@ -38,6 +38,11 @@ export const PUBLIC_AREAS = [
   'Fountain Lounge',
   'Front Office',
   'Elevators',
+  'Olympus Male',
+  'Olympus Female',
+  'Tennis Court',
+  'Public Restrooms L3',
+  'Public Restrooms L4',
 ];
 
 export const RESTAURANTS = [
@@ -46,6 +51,10 @@ export const RESTAURANTS = [
   'Fountain Lounge',
   'Club Italiano',
   'Sumire',
+  'Grand Club',
+  'Cheers',
+  'Pierre Herme',
+  'Banquet',
 ];
 
 function toEntries(names, displayPrefix = '') {

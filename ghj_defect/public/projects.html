@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Projects — Grand Hyatt Defects</title>
+  <meta name="theme-color" content="#06070d" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=8" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </span>
+      Grand Hyatt <em>Defects</em>
+    </a>
+    <nav class="tabs">
+      <a href="/report.html">Report</a>
+      <a href="/worker.html">Queue</a>
+      <a href="/projects.html" class="active">Projects</a>
+      <a href="/dashboard.html">Analytics</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-head overview-head">
+      <div>
+        <h1>Projects</h1>
+        <p>Longer, planned work — with a timeline, a person in charge, and a scope to execute.</p>
+      </div>
+      <button type="button" class="btn btn-new-project" id="new-project-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        New project
+      </button>
+    </div>
+
+    <div id="msg" class="msg" role="status"></div>
+
+    <div class="matrix-toolbar">
+      <div class="filter-chips" id="filter-chips">
+        <button type="button" class="chip active" data-filter="all">All</button>
+        <button type="button" class="chip" data-filter="Planned">Planned</button>
+        <button type="button" class="chip" data-filter="In Progress">In Progress</button>
+        <button type="button" class="chip" data-filter="On Hold">On Hold</button>
+        <button type="button" class="chip" data-filter="Completed">Completed</button>
+      </div>
+    </div>
+
+    <div id="projects-root">
+      <div class="skeleton block"></div>
+      <div class="skeleton block" style="margin-top:10px;"></div>
+    </div>
+  </main>
+
+  <!-- New project modal -->
+  <div class="modal-overlay" id="np-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="np-title">
+      <div class="modal-head">
+        <div>
+          <h3 id="np-title">New project</h3>
+          <span class="modal-sub">Plan a longer piece of work</span>
+        </div>
+        <button type="button" class="modal-close" id="np-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <!-- Access gate -->
+        <div id="np-auth">
+          <label class="field-label" for="np-code">Access code</label>
+          <input type="password" id="np-code" placeholder="Enter your access code" autocomplete="off" />
+          <button type="button" id="np-unlock" class="btn"><span class="spinner"></span>Unlock</button>
+        </div>
+
+        <!-- Project form -->
+        <form id="np-form" hidden>
+          <label class="field-label">Area</label>
+          <div class="button-group" id="np-area-group">
+            <button type="button" class="btn-select" data-value="Rooms">Rooms</button>
+            <button type="button" class="btn-select" data-value="Public Area">Public Area</button>
+            <button type="button" class="btn-select" data-value="Restaurant">Restaurant</button>
+          </div>
+
+          <div id="np-loc-section" hidden>
+            <label class="field-label" id="np-loc-label">Room No.</label>
+            <div class="combo">
+              <input type="text" id="np-loc" autocomplete="off" placeholder="Type to search…" />
+              <div class="combo-options" id="np-loc-options" hidden></div>
+            </div>
+          </div>
+
+          <label class="field-label" for="np-title-input">Project title</label>
+          <input type="text" id="np-title-input" placeholder="e.g., Refurbish Olympus Male locker room" />
+
+          <label class="field-label" for="np-pic">Person in charge (PIC)</label>
+          <input type="text" id="np-pic" placeholder="Who is leading this project" />
+
+          <label class="field-label" for="np-department">Department</label>
+          <select id="np-department">
+            <option value="" disabled selected>Select department</option>
+            <option value="Managerial">Managerial</option>
+            <option value="Engineering">Engineering</option>
+            <option value="F&B">F&B</option>
+            <option value="Rooms">Rooms</option>
+            <option value="Housekeeping">Housekeeping</option>
+            <option value="Others">Others</option>
+          </select>
+
+          <label class="field-label">Priority</label>
+          <div class="button-group" id="np-priority-group">
+            <button type="button" class="btn-select" data-value="Low">Low</button>
+            <button type="button" class="btn-select" data-value="Medium">Medium</button>
+            <button type="button" class="btn-select" data-value="High">High</button>
+            <button type="button" class="btn-select" data-value="Critical">Critical</button>
+          </div>
+
+          <div class="field-row">
+            <div>
+              <label class="field-label" for="np-start">Start date</label>
+              <input type="date" id="np-start" />
+            </div>
+            <div>
+              <label class="field-label" for="np-target">Target date</label>
+              <input type="date" id="np-target" />
+            </div>
+          </div>
+
+          <label class="field-label" for="np-scope">Scope &amp; plan</label>
+          <textarea id="np-scope" placeholder="What does this project involve, and how will it be executed?"></textarea>
+
+          <button type="submit" id="np-submit" class="btn"><span class="spinner"></span>Create project</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Project detail / update modal -->
+  <div class="modal-overlay" id="pd-modal" hidden>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="pd-title">
+      <div class="modal-head">
+        <div>
+          <h3 id="pd-title">—</h3>
+          <span class="modal-sub" id="pd-sub"></span>
+        </div>
+        <button type="button" class="modal-close" id="pd-close" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="pd-body"></div>
+    </div>
+  </div>
+
+  <script src="/js/sw-register.js"></script>
+  <script type="module" src="/js/projects.js?v=8"></script>
+</body>
+</html>

@@ -1,12 +1,13 @@
 // Network-first service worker: always serve the latest deploy when online,
 // fall back to cache when offline. Bumping CACHE invalidates old shells.
-const CACHE = 'grand-hyatt-defect-v7';
+const CACHE = 'grand-hyatt-defect-v8';
 const SHELL = [
   '/',
   '/report.html',
   '/worker.html',
+  '/projects.html',
   '/dashboard.html',
-  '/css/styles.css?v=7',
+  '/css/styles.css?v=8',
   '/manifest.webmanifest',
   '/icons/icon.svg',
 ];
