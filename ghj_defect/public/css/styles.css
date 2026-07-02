@@ -2126,6 +2126,147 @@ input[type='range'] {
   .action-button svg { width: 18px; height: 18px; }
 }
 
+/* ============================================================
+   Minutes of meeting (daily briefings)
+   ============================================================ */
+.brief-datebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.date-nav {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.date-nav:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.brief-date-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.brief-date-center input[type='date'] {
+  margin-bottom: 0;
+  max-width: 220px;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+}
+
+.brief-date-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.brief-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.brief-stats input { margin-bottom: 0; }
+
+input[type='number'] {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-family: var(--font-mono);
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number']:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.22);
+}
+
+input:disabled,
+textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.brief-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.brief-card-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+}
+
+.brief-card textarea {
+  min-height: 130px;
+  margin-bottom: 0;
+}
+
+.brief-icon {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.brief-icon.am { background: var(--amber-dim); color: var(--amber); }
+.brief-icon.pm { background: rgba(94, 106, 210, 0.16); color: var(--accent-bright); }
+
+.brief-saved {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .brief-stats { gap: 8px; }
+  .brief-stats .field-label { font-size: 0.68rem; }
+  .tabs a { padding: 6px 9px; font-size: 0.72rem; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

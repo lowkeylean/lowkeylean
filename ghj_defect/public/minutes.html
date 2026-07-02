@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Minutes — Grand Hyatt Defects</title>
+  <meta name="theme-color" content="#06070d" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/styles.css?v=9" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <a href="/" class="brand">
+      <span class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </span>
+      Grand Hyatt <em>Defects</em>
+    </a>
+    <nav class="tabs">
+      <a href="/report.html">Report</a>
+      <a href="/worker.html">Queue</a>
+      <a href="/projects.html">Projects</a>
+      <a href="/minutes.html" class="active">Minutes</a>
+      <a href="/dashboard.html">Analytics</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="page-head overview-head">
+      <div>
+        <h1>Minutes of meeting</h1>
+        <p>Daily morning &amp; evening briefings, occupancy and movement estimates.</p>
+      </div>
+    </div>
+
+    <div id="msg" class="msg" role="status"></div>
+
+    <!-- Date navigation -->
+    <div class="brief-datebar">
+      <button type="button" class="date-nav" id="prev-day" aria-label="Previous day">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="brief-date-center">
+        <input type="date" id="brief-date" />
+        <span class="brief-date-label" id="brief-date-label"></span>
+      </div>
+      <button type="button" class="date-nav" id="next-day" aria-label="Next day">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+
+    <!-- Unlock gate (shown until the access code is entered) -->
+    <section id="unlock-card" class="panel" hidden>
+      <h2>Editing locked</h2>
+      <p class="pd-locked-note">You can read today's briefings below. Enter the access code to edit.</p>
+      <label class="field-label" for="access-code">Access code</label>
+      <input type="password" id="access-code" placeholder="Enter your access code" autocomplete="off" />
+      <button type="button" id="unlock-btn" class="btn"><span class="spinner"></span>Unlock editing</button>
+    </section>
+
+    <form id="brief-form">
+      <!-- Daily numbers -->
+      <section class="panel">
+        <h2>Day at a glance</h2>
+        <div class="brief-stats">
+          <div>
+            <label class="field-label" for="occupancy">Occupancy %</label>
+            <input type="number" id="occupancy" min="0" max="100" step="1" inputmode="numeric" placeholder="—" />
+          </div>
+          <div>
+            <label class="field-label" for="est-arrival">Est. arrivals</label>
+            <input type="number" id="est-arrival" min="0" step="1" inputmode="numeric" placeholder="—" />
+          </div>
+          <div>
+            <label class="field-label" for="est-departure">Est. departures</label>
+            <input type="number" id="est-departure" min="0" step="1" inputmode="numeric" placeholder="—" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Morning briefing -->
+      <section class="panel brief-card">
+        <div class="brief-card-head">
+          <h2><span class="brief-icon am">☀</span>Morning briefing</h2>
+          <span class="brief-saved" id="morning-saved"></span>
+        </div>
+        <textarea id="morning-notes" placeholder="Minutes from the morning briefing…"></textarea>
+      </section>
+
+      <!-- Evening briefing -->
+      <section class="panel brief-card">
+        <div class="brief-card-head">
+          <h2><span class="brief-icon pm">☾</span>Evening briefing</h2>
+          <span class="brief-saved" id="evening-saved"></span>
+        </div>
+        <textarea id="evening-notes" placeholder="Minutes from the evening briefing…"></textarea>
+      </section>
+
+      <section class="panel">
+        <label class="field-label" for="updated-by">Your name</label>
+        <input type="text" id="updated-by" placeholder="Who is updating these minutes" />
+        <button type="submit" id="save-btn" class="btn"><span class="spinner"></span>Save minutes</button>
+        <div class="pd-meta" id="last-saved"></div>
+      </section>
+    </form>
+  </main>
+
+  <script src="/js/sw-register.js"></script>
+  <script type="module" src="/js/minutes.js?v=9"></script>
+</body>
+</html>
